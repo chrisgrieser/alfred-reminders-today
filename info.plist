@@ -738,7 +738,7 @@ osascript -l JavaScript ./scripts/select-reminders.js "$reminders_json"</string>
 				<key>subtext</key>
 				<string>today</string>
 				<key>text</key>
-				<string>⊕ Add Reminder: {query}</string>
+				<string>❇️ Add Reminder: {query}</string>
 				<key>withspace</key>
 				<true/>
 			</dict>
@@ -802,7 +802,7 @@ osascript -l JavaScript ./scripts/select-reminders.js "$reminders_json"</string>
 				<key>subtext</key>
 				<string>tomorrow</string>
 				<key>text</key>
-				<string>⊕ Add Reminder: {query}</string>
+				<string>✴️ Add Reminder: {query}</string>
 				<key>withspace</key>
 				<true/>
 			</dict>
