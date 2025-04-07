@@ -42,9 +42,7 @@ eventStore.requestFullAccessToEvents { granted, error in
 	if when == "today" {
 		dayToUse = today
 	} else if when == "tomorrow" {
-		guard let tomorrow = calendar.date(byAdding: .day, value: 1, to: today) else {
-			fatalError("Failed to calculate tomorrow's date")
-		}
+		let tomorrow = calendar.date(byAdding: .day, value: 1, to: today)!
 		dayToUse = tomorrow
 	} else {
 		print("❌ Invalid value for 'when_to_add' environment variable.\n")
