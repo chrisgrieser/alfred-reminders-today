@@ -5,14 +5,13 @@ app.includeStandardAdditions = true;
 //──────────────────────────────────────────────────────────────────────────────
 
 /** @typedef {Object} reminderObj
+ * @property {string} id
  * @property {string} title
- * @property {0|1|5|9} priority 0 = None, 9 = Low, 5 = Medium, 1 = High
- * @property {string} list
- * @property {string} notes
- * @property {string} externalId
+ * @property {string} notes aka body
  * @property {boolean} isCompleted
  * @property {string} dueDate
- * @property {string} startDate
+ * @property {string} creationDate
+ * @property {string} isAllDay
  */
 
 const isToday = (/** @type {Date} */ aDate) => {
@@ -60,42 +59,35 @@ function relativeDate(absDate) {
 }
 
 const urlRegex =
-	/(https?|obsidian):\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=?/&]{1,256}?\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)/;
+	/(https?|obsidian):\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=?/&]{1,256}?\.[a-zA-Z0-9()]{1,7}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)/;
 
 //───────────────────────────────────────────────────────────────────────────
 
+/** @type {AlfredRun} */
 // biome-ignore lint/correctness/noUnusedVariables: Alfred run
-function run() {
-	// parameters
-	const list = $.getenv("reminder_list");
+function run(argv) {
 	const showCompleted =
 		$.NSProcessInfo.processInfo.environment.objectForKey("showCompleted").js === "true";
 
-	// RUN CMD
-	// INFO not filtering for reminders due today, since the filtering should
-	// include reminders with due date in the past or with missing due date.
-	const completedArg = showCompleted ? "--include-completed" : "";
-	const shellCmd = `reminders show "${list}" ${completedArg} --sort=due-date --format=json`;
-
 	const endOfToday = new Date();
 	endOfToday.setHours(23, 59, 59, 0); // to include reminders later that day
+
 	/** @type {reminderObj[]} */
-	const responseJson = JSON.parse(app.doShellScript(shellCmd));
-	const remindersFiltered = responseJson.filter((rem) => {
+	const remindersJson = JSON.parse(argv[0]);
+	const remindersFiltered = remindersJson.filter((rem) => {
 		const dueDate = rem.dueDate && new Date(rem.dueDate);
 		const noDueDate = rem.dueDate === undefined;
 		const openAndDueBeforeToday = !rem.isCompleted && dueDate < endOfToday;
 		const completedAndDueToday = rem.isCompleted && dueDate && isToday(dueDate);
-		return openAndDueBeforeToday || completedAndDueToday || noDueDate;
+		return openAndDueBeforeToday || (completedAndDueToday && showCompleted) || noDueDate;
 	});
 
-	const remindersLeftLater = remindersFiltered.length - 1;
 	const startOfToday = new Date();
 	startOfToday.setHours(0, 0, 0, 0);
 
 	/** @type {AlfredItem[]} */
 	const reminders = remindersFiltered.map((rem) => {
-		const { title, notes, externalId, isCompleted, dueDate } = rem;
+		const { title, notes, id, isCompleted, dueDate } = rem;
 		const body = notes || "";
 		const content = title + "\n" + body;
 		const dueDateObj = new Date(dueDate);
@@ -108,8 +100,7 @@ function run() {
 				minute: "2-digit",
 				hour12: false,
 			});
-		const pastDueDate =
-			dueDateObj < startOfToday && relativeDate(dueDateObj)
+		const pastDueDate = dueDateObj < startOfToday && relativeDate(dueDateObj);
 		const missingDueDate = !dueDate && "no due date";
 		const subtitle = [body.replace(/\n+/g, " "), dueTime || pastDueDate || missingDueDate]
 			.filter(Boolean)
@@ -124,33 +115,38 @@ function run() {
 		const alfredItem = {
 			title: emoji + title,
 			subtitle: subtitle,
-			text: { copy: content, largetype: content },
+			text: { copy: content },
 			variables: {
-				id: externalId,
+				id: id,
 				title: title,
-				body: body,
 				notificationTitle: isCompleted ? "🔲 Uncompleted" : "☑️ Completed",
-				mode: isCompleted ? "uncomplete" : "complete",
-				cmdMode: url ? "open-url" : "copy", // only for `cmd`
-				isCompleted: isCompleted.toString(), // only for `cmd`
-				showCompleted: showCompleted.toString(),
-				remindersLeftNow: true.toString(),
-				remindersLeftLater: remindersLeftLater, // for deciding whether to loop back
+				showCompleted: showCompleted.toString(), // keep "show completed" state
+				keepOpen: (remindersFiltered.length > 1).toString(),
+				mode: "toggle-completed",
 			},
 			mods: {
-				// open URL/copy
 				cmd: {
 					arg: url || content,
-					subtitle:
-						(url ? "⌘: Open URL" : "⌘: Copy") + (isCompleted ? "" : " and mark as completed"),
+					subtitle: (url ? "⌘: Open URL" : "⌘: Copy") + (isCompleted ? "" : " and complete"),
+					variables: {
+						id: id,
+						title: title,
+						cmdMode: url ? "open-url" : "copy",
+						mode: isCompleted ? "stop-after" : "toggle-completed",
+					},
 				},
-				// edit content
-				alt: {
-					arg: content,
+				shift: {
+					variables: {
+						id: id,
+						title: title,
+						mode: "snooze",
+					},
 				},
-				// toggle completed
 				ctrl: {
-					variables: { showCompleted: (!showCompleted).toString() },
+					variables: {
+						showCompleted: (!showCompleted).toString(),
+						mode: "show-completed",
+					},
 				},
 			},
 		};
@@ -166,10 +162,10 @@ function run() {
 					title: "No open tasks for today.",
 					subtitle: "⏎: Show completed tasks.",
 					variables: {
-						remindersLeftNow: false.toString(),
 						showCompleted: true.toString(),
+						mode: "show-completed",
 					},
-					mods: { cmd: invalid, shift: invalid, alt: invalid },
+					mods: { cmd: invalid, shift: invalid },
 				},
 			],
 		});
