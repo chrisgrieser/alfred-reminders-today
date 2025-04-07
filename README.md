@@ -7,13 +7,11 @@ Display and edit reminders due today.
 <img alt="Showcase" width=70% src="https://github.com/user-attachments/assets/627ef6de-8fe9-4710-8352-2c63e4be5e67">
 
 ## Info on version 2.0
-Due to the underlying tool (`reminder-cli`) being abandoned, I rewrote this workflow
-to work fully standalone. This has the drawback some features had to be removed
-for now:
+Due to the underlying tool (`reminder-cli`) being abandoned, I rewrote this
+workflow to work fully standalone. This has the drawback that adding from
+selection/browser tabs and editing reminders features had to be removed.
 
-- adding from selection/browser tabs
-- editing reminders
-- add at a future date
+Note that this workflow now **requires at least macOS 14**.
 
 On the upside, this workflow now does not require `reminders-cli` anymore, so
 you can uninstall it:
