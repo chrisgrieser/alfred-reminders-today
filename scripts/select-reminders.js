@@ -71,13 +71,15 @@ function run(argv) {
 
 	/** @type {reminderObj[]} */
 	const remindersJson = JSON.parse(argv[0]);
-	const remindersFiltered = remindersJson.filter((rem) => {
-		const dueDate = rem.dueDate && new Date(rem.dueDate);
-		const openNoDueDate = rem.dueDate === undefined && !rem.isCompleted;
-		const openAndDueBeforeToday = !rem.isCompleted && dueDate < endOfToday;
-		const completedAndDueToday = rem.isCompleted && dueDate && isToday(dueDate);
-		return openAndDueBeforeToday || (completedAndDueToday && showCompleted) || openNoDueDate;
-	});
+	const remindersFiltered = remindersJson
+		.filter((rem) => {
+			const dueDate = rem.dueDate && new Date(rem.dueDate);
+			const openNoDueDate = rem.dueDate === undefined && !rem.isCompleted;
+			const openAndDueBeforeToday = !rem.isCompleted && dueDate < endOfToday;
+			const completedAndDueToday = rem.isCompleted && dueDate && isToday(dueDate);
+			return openAndDueBeforeToday || (completedAndDueToday && showCompleted) || openNoDueDate;
+		})
+		.sort((a, b) => +new Date(a.creationDate) - +new Date(b.creationDate));
 
 	/** @type {AlfredItem[]} */
 	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: okay here
