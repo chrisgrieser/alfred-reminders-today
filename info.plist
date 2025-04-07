@@ -1239,6 +1239,25 @@ to set a hotkey to show reminders due today</string>
 			<key>config</key>
 			<dict>
 				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>include</string>
+			</dict>
+			<key>description</key>
+			<string>include open reminders with no due date</string>
+			<key>label</key>
+			<string>No due date</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>include_no_duedate</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
 				<string></string>
 				<key>placeholder</key>
 				<string></string>

@@ -14,7 +14,8 @@ app.includeStandardAdditions = true;
  * @property {string} isAllDay
  */
 
-const isToday = (/** @type {Date} */ aDate) => {
+const isToday = (/** @type {Date?} */ aDate) => {
+	if (!aDate) return false;
 	const today = new Date();
 	return today.toDateString() === aDate.toDateString();
 };
@@ -64,6 +65,7 @@ const urlRegex =
 function run(argv) {
 	const showCompleted =
 		$.NSProcessInfo.processInfo.environment.objectForKey("showCompleted").js === "true";
+	const includeNoDuedate = $.getenv("include_no_duedate") === "1";
 	const endOfToday = new Date();
 	endOfToday.setHours(23, 59, 59, 0); // to include reminders later that day
 	const startOfToday = new Date();
@@ -73,11 +75,11 @@ function run(argv) {
 	const remindersJson = JSON.parse(argv[0]);
 	const remindersFiltered = remindersJson
 		.filter((rem) => {
-			const dueDate = rem.dueDate && new Date(rem.dueDate);
-			const openNoDueDate = rem.dueDate === undefined && !rem.isCompleted;
-			const openAndDueBeforeToday = !rem.isCompleted && dueDate < endOfToday;
-			const completedAndDueToday = rem.isCompleted && dueDate && isToday(dueDate);
-			return openAndDueBeforeToday || (completedAndDueToday && showCompleted) || openNoDueDate;
+			const dueDate = rem.dueDate ? new Date(rem.dueDate) : null;
+			const openNoDueDate = includeNoDuedate && rem.dueDate === undefined && !rem.isCompleted;
+			const openAndDueBeforeToday = dueDate && !rem.isCompleted && dueDate < endOfToday;
+			const completedAndDueToday = showCompleted && rem.isCompleted && isToday(dueDate);
+			return openAndDueBeforeToday || completedAndDueToday|| openNoDueDate;
 		})
 		.sort((a, b) => +new Date(a.creationDate) - +new Date(b.creationDate));
 
