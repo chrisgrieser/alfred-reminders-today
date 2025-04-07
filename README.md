@@ -36,7 +36,9 @@ brew untap keith/formulae
 	  <kbd>⏎</kbd> on a completed reminder marks it as uncompleted. The other
 	  modifiers work the same as with uncompleted reminders. Use <kbd>⌃⏎</kbd>
 	  again to hide completed reminders again.
-- Quickly add a new reminder due today with the keyword `qq`.
+- Quickly add a new reminder
+	+ …due today with the keyword `qq`.
+	+ …due tomorrow with the keyword `qqq`.
 
 [➡️ Download the latest release of this
 workflow.](https://github.com/chrisgrieser/alfred-reminders-today/releases/latest)

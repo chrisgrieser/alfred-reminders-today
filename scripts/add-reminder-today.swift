@@ -15,6 +15,7 @@ guard args.count > 1 else {
 let reminderTitle = args[1]
 
 let reminderList = ProcessInfo.processInfo.environment["reminder_list"]!
+let when = ProcessInfo.processInfo.environment["when_to_add"]!
 // ─────────────────────────────────────────────────────────────────────────────
 
 eventStore.requestFullAccessToEvents { granted, error in
@@ -34,13 +35,28 @@ eventStore.requestFullAccessToEvents { granted, error in
 	reminder.title = reminderTitle
 	reminder.isCompleted = false
 
-	// Set the reminder as an all-day reminder (no hour or minute)
+	// determine when to add
 	let calendar = Calendar.current
 	let today = Date()
-	var todayComponents = calendar.dateComponents([.year, .month, .day], from: today)
-	todayComponents.hour = nil
-	todayComponents.minute = nil
-	reminder.dueDateComponents = todayComponents
+	var dayToUse: Date
+	if when == "today" {
+		dayToUse = today
+	} else if when == "tomorrow" {
+		guard let tomorrow = calendar.date(byAdding: .day, value: 1, to: today) else {
+			fatalError("Failed to calculate tomorrow's date")
+		}
+		dayToUse = tomorrow
+	} else {
+		print("❌ Invalid value for 'when_to_add' environment variable.\n")
+		semaphore.signal()
+		return
+	}
+
+	// Set the reminder as an all-day reminder (no hour or minute)
+	var dateComponents = calendar.dateComponents([.year, .month, .day], from: dayToUse)
+	dateComponents.hour = nil
+	dateComponents.minute = nil
+	reminder.dueDateComponents = dateComponents
 
 	// Find the calendar (list) by name
 	if let calendarList = eventStore.calendars(for: .reminder).first(where: {
@@ -56,7 +72,7 @@ eventStore.requestFullAccessToEvents { granted, error in
 	// Save
 	do {
 		try eventStore.save(reminder, commit: true)
-		print(reminderTitle) // for Alfred notification
+		print(reminderTitle)  // for Alfred notification
 	} catch {
 		print("❌ Failed to create reminder: \(error.localizedDescription)\n")
 	}
