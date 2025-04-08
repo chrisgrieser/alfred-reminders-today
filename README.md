@@ -22,9 +22,9 @@ brew untap keith/formulae
 ```
 
 ## Usage
-- Display reminders due today (or overdue) via the keyword `rem`. Alternatively,
-  you can also use a
-  [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/) for that.
+- Display reminders due today (or overdue) via the keyword `rem`. Configure the
+  [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/) for faster
+  triggering.
 	+ <kbd>⏎</kbd>: Complete the reminder.
 	+ <kbd>⌘⏎</kbd>: If the reminder has a URL, open it in the default browser,
 	  otherwise, copy the reminder's text to the clipboard. Afterward, complete
@@ -33,10 +33,9 @@ brew untap keith/formulae
 	+ <kbd>⌃⏎</kbd>: Display completed reminders due today as well. Using
 	  <kbd>⏎</kbd> on a completed reminder marks it as uncompleted. The other
 	  modifiers work the same as with uncompleted reminders. Use <kbd>⌃⏎</kbd>
-	  again to hide completed reminders again.
-- Quickly add a new reminder
-	+ …due today with the keyword `qq`.
-	+ …due tomorrow with the keyword `qqq`.
+	  once more to hide completed reminders again.
+- Quickly add a new reminder due today or tomorrow with the keywords `qq` and
+  `qqq`, respectively.
 
 [➡️ Download the latest release of this
 workflow.](https://github.com/chrisgrieser/alfred-reminders-today/releases/latest)
