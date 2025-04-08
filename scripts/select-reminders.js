@@ -12,6 +12,7 @@ app.includeStandardAdditions = true;
  * @property {string} dueDate
  * @property {string} creationDate
  * @property {string} isAllDay
+ * @property {boolean} hasRecurrenceRules
  */
 
 const isToday = (/** @type {Date?} */ aDate) => {
@@ -102,7 +103,8 @@ function run(argv) {
 			.join(" · ");
 
 		const [url] = content.match(urlRegex) || [];
-		const emoji = rem.isCompleted ? "☑️ " : "";
+		let emoji = rem.isCompleted ? "☑️ " : "";
+		if (rem.hasRecurrenceRules) emoji += "🔁 ";
 
 		// INFO the boolean are all stringified, so they are available as "true"
 		// and "false" after stringification, instead of the less clear "1" and "0"
