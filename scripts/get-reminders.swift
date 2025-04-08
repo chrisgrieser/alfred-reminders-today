@@ -5,6 +5,8 @@ struct ReminderOutput: Codable {
 	let id: String
 	let title: String
 	let notes: String?
+	let url: String?
+	let list: String
 	let dueDate: String?
 	let creationDate: String?
 	let isAllDay: Bool
@@ -55,6 +57,8 @@ eventStore.requestFullAccessToReminders { granted, error in
 				id: reminder.calendarItemIdentifier,
 				title: reminder.title ?? "(No Title)",
 				notes: reminder.notes,
+				url: reminder.url?.absoluteString,
+				list: reminder.calendar.title,
 				dueDate: components?.date.flatMap { formatter.string(from: $0) },
 				creationDate: reminder.creationDate.flatMap { formatter.string(from: $0) },
 				isAllDay: isAllDay,
