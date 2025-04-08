@@ -17,7 +17,8 @@ struct ReminderOutput: Codable {
 let eventStore = EKEventStore()
 let semaphore = DispatchSemaphore(value: 0)
 
-let reminderList = ProcessInfo.processInfo.environment["reminder_list"]!
+// Alfred environment variable, empty means using all lists
+let reminderList = ProcessInfo.processInfo.environment["reminder_list"] ?? ""
 // ─────────────────────────────────────────────────────────────────────────────
 
 eventStore.requestFullAccessToReminders { granted, error in
@@ -32,15 +33,23 @@ eventStore.requestFullAccessToReminders { granted, error in
 		return
 	}
 
-	let calendars = eventStore.calendars(for: .reminder)
+	// ──────────────────────────────────────────────────────────────────────────
 
-	guard let targetCalendar = calendars.first(where: { $0.title == reminderList }) else {
+	// Get list specified or use all lists
+	let calendars = eventStore.calendars(for: .reminder)
+	let selectedCalendars: [EKCalendar]
+	if reminderList.isEmpty {
+		selectedCalendars = calendars
+	} else if let target = calendars.first(where: { $0.title == reminderList }) {
+		selectedCalendars = [target]
+	} else {
 		print("⚠️ No list found with name '\(reminderList)'")
 		semaphore.signal()
 		return
 	}
 
-	let predicate = eventStore.predicateForReminders(in: [targetCalendar])
+	// Get reminders from the list and format them
+	let predicate = eventStore.predicateForReminders(in: selectedCalendars)
 	eventStore.fetchReminders(matching: predicate) { reminders in
 		guard let reminders = reminders else {
 			print("[]")
@@ -67,6 +76,7 @@ eventStore.requestFullAccessToReminders { granted, error in
 			)
 		}
 
+		// output as stringified JSON
 		do {
 			let jsonData = try JSONEncoder().encode(reminderData)
 			if let jsonString = String(data: jsonData, encoding: .utf8) {
@@ -75,7 +85,6 @@ eventStore.requestFullAccessToReminders { granted, error in
 		} catch {
 			print("❌ Failed to encode reminders as JSON: \(error.localizedDescription)")
 		}
-
 		semaphore.signal()
 	}
 }
