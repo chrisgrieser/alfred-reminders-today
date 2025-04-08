@@ -560,38 +560,6 @@ osascript -l JavaScript ./scripts/select-reminders.js "$reminders_json"</string>
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>conditions</key>
-				<array>
-					<dict>
-						<key>inputstring</key>
-						<string>{var:cmdMode}</string>
-						<key>matchcasesensitive</key>
-						<false/>
-						<key>matchmode</key>
-						<integer>0</integer>
-						<key>matchstring</key>
-						<string>open-url</string>
-						<key>outputlabel</key>
-						<string>open URL</string>
-						<key>uid</key>
-						<string>0FC40472-5309-400D-937A-A779E5B73B20</string>
-					</dict>
-				</array>
-				<key>elselabel</key>
-				<string>copy</string>
-				<key>hideelse</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.utility.conditional</string>
-			<key>uid</key>
-			<string>7620DB33-1A59-45FB-9FE1-CF7502A1EE80</string>
-			<key>version</key>
-			<integer>1</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>concurrently</key>
 				<false/>
 				<key>escaping</key>
@@ -630,6 +598,38 @@ osascript -l JavaScript ./scripts/select-reminders.js "$reminders_json"</string>
 			<string>alfred.workflow.output.notification</string>
 			<key>uid</key>
 			<string>6DBE7C33-DE4C-4B1D-8831-E8F02E6FB3D6</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>conditions</key>
+				<array>
+					<dict>
+						<key>inputstring</key>
+						<string>{var:cmdMode}</string>
+						<key>matchcasesensitive</key>
+						<false/>
+						<key>matchmode</key>
+						<integer>0</integer>
+						<key>matchstring</key>
+						<string>open-url</string>
+						<key>outputlabel</key>
+						<string>open URL</string>
+						<key>uid</key>
+						<string>0FC40472-5309-400D-937A-A779E5B73B20</string>
+					</dict>
+				</array>
+				<key>elselabel</key>
+				<string>copy</string>
+				<key>hideelse</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.conditional</string>
+			<key>uid</key>
+			<string>7620DB33-1A59-45FB-9FE1-CF7502A1EE80</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -1051,7 +1051,7 @@ If you are not prompted to add them, try:
 			<key>xpos</key>
 			<real>450</real>
 			<key>ypos</key>
-			<real>245</real>
+			<real>290</real>
 		</dict>
 		<key>76767F1C-52B8-425C-8621-F7E67C523434</key>
 		<dict>

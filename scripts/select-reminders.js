@@ -80,7 +80,7 @@ function run(argv) {
 			const openNoDueDate = includeNoDuedate && rem.dueDate === undefined && !rem.isCompleted;
 			const openAndDueBeforeToday = dueDate && !rem.isCompleted && dueDate < endOfToday;
 			const completedAndDueToday = showCompleted && rem.isCompleted && isToday(dueDate);
-			return openAndDueBeforeToday || completedAndDueToday|| openNoDueDate;
+			return openAndDueBeforeToday || completedAndDueToday || openNoDueDate;
 		})
 		.sort((a, b) => +new Date(a.creationDate) - +new Date(b.creationDate));
 
@@ -124,7 +124,8 @@ function run(argv) {
 			mods: {
 				cmd: {
 					arg: url || content,
-					subtitle: (url ? "⌘: Open URL" : "⌘: Copy") + (rem.isCompleted ? "" : " and complete"),
+					subtitle:
+						(url ? "⌘: Open URL" : "⌘: Copy") + (rem.isCompleted ? "" : " and complete"),
 					variables: {
 						id: rem.id,
 						title: rem.title,
