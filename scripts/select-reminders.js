@@ -69,7 +69,7 @@ function run(argv) {
 	const showCompleted =
 		$.NSProcessInfo.processInfo.environment.objectForKey("showCompleted").js === "true";
 	const includeNoDuedate = $.getenv("include_no_duedate") === "1";
-	const usesSpecificList = $.getenv("reminder_list") !== "";
+	const includeAllLists = $.getenv("include_all_lists") === "1";
 	const endOfToday = new Date();
 	endOfToday.setHours(23, 59, 59, 0); // to include reminders later that day
 	const startOfToday = new Date();
@@ -96,13 +96,13 @@ function run(argv) {
 		const dueDateObj = new Date(rem.dueDate);
 
 		// SUBTITLE: display due time, past due dates, missing due dates, list (if
-		// multiple), and  body
+		// multiple), and body
 		/** @type {Intl.DateTimeFormatOptions} */
 		const timeFormat = { hour: "2-digit", minute: "2-digit", hour12: false };
 		const dueTime = rem.isAllDay ? "" : new Date(rem.dueDate).toLocaleTimeString([], timeFormat);
 		const pastDueDate = dueDateObj < startOfToday ? relativeDate(dueDateObj) : "";
-		const missingDueDate = rem.dueDate ? "" : "(no due date)";
-		const listName = usesSpecificList ? "" : rem.list; // only display when more than 1
+		const missingDueDate = rem.dueDate ? "" : "no due date";
+		const listName = includeAllLists ? rem.list : ""; // only display when more than 1
 		const subtitle = [
 			listName,
 			dueTime || pastDueDate || missingDueDate,
