@@ -140,6 +140,7 @@ function run(argv) {
 						title: rem.title,
 						cmdMode: url ? "open-url" : "copy",
 						mode: rem.isCompleted ? "stop-after" : "toggle-completed",
+						keepOpen: false.toString(),
 					},
 				},
 				shift: {
