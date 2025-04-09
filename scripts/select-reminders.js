@@ -92,7 +92,7 @@ function run(argv) {
 	// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: okay here
 	const reminders = remindersFiltered.map((rem) => {
 		const body = rem.notes || "";
-		const content = rem.title + "\n" + body + "\n" + rem.url;
+		const content = (rem.title + "\n" + body + "\n" + (rem.url || "")).trim();
 		const dueDateObj = new Date(rem.dueDate);
 
 		// SUBTITLE: display due time, past due dates, missing due dates, list (if
@@ -121,7 +121,7 @@ function run(argv) {
 		const alfredItem = {
 			title: emoji + rem.title,
 			subtitle: subtitle,
-			text: { copy: content },
+			text: { copy: content, largetype: content },
 			variables: {
 				id: rem.id,
 				title: rem.title,

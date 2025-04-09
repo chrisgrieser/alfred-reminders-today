@@ -34,6 +34,8 @@ brew untap keith/formulae
 	  <kbd>⏎</kbd> on a completed reminder marks it as uncompleted. The other
 	  modifiers work the same as with uncompleted reminders. Use <kbd>⌃⏎</kbd>
 	  once more to hide completed reminders again.
+	+ <kbd>⌘C</kbd>: Copy the reminder details (title, notes, URL).
+	+ <kbd>⌘L</kbd>: Display the reminder details in Large Type.
 - Quickly add a new reminder due today or tomorrow with the keywords `qq` and
   `qqq`, respectively.
 
