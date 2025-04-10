@@ -392,7 +392,7 @@
 				<key>fontsizing</key>
 				<integer>0</integer>
 				<key>footertext</key>
-				<string>⌥⏎: Save   ⎋: Cancel</string>
+				<string>First line: title, remaining lines: notes     ·     ⌥⏎: Save     ·     ⎋: Cancel</string>
 				<key>inputfile</key>
 				<string></string>
 				<key>inputtype</key>
@@ -1023,7 +1023,8 @@ If you are not prompted to add them, try:
 	  otherwise, copy the reminder's title &amp; notes to the clipboard. Afterward,
 	  complete the reminder.
 	+ &lt;kbd&gt;⇧⏎&lt;/kbd&gt;: "Snooze" the reminder by changing its due date to tomorrow.
-	+ &lt;kbd&gt;⌥⏎&lt;/kbd&gt;: Edit the reminders title and body.
+	+ &lt;kbd&gt;⌥⏎&lt;/kbd&gt;: Edit the reminders title and body in Alfred's Text View.
+	  The first line is the reminder's title, the remaining lines the notes.
 	+ &lt;kbd&gt;⌃⏎&lt;/kbd&gt;: Display completed reminders due today as well. Using
 	  &lt;kbd&gt;⏎&lt;/kbd&gt; on a completed reminder marks it as uncompleted. The other
 	  modifiers work the same as with uncompleted reminders. Use &lt;kbd&gt;⌃⏎&lt;/kbd&gt;

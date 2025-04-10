@@ -29,7 +29,8 @@ brew untap keith/formulae
 	  otherwise, copy the reminder's title & notes to the clipboard. Afterward,
 	  complete the reminder.
 	+ <kbd>⇧⏎</kbd>: "Snooze" the reminder by changing its due date to tomorrow.
-	+ <kbd>⌥⏎</kbd>: Edit the reminders title and body.
+	+ <kbd>⌥⏎</kbd>: Edit the reminders title and body in Alfred's Text View.
+	  The first line is the reminder's title, the remaining lines the notes.
 	+ <kbd>⌃⏎</kbd>: Display completed reminders due today as well. Using
 	  <kbd>⏎</kbd> on a completed reminder marks it as uncompleted. The other
 	  modifiers work the same as with uncompleted reminders. Use <kbd>⌃⏎</kbd>
