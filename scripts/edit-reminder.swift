@@ -11,10 +11,6 @@ let mode = ProcessInfo.processInfo.environment["mode"]!
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-func toggleCompleted(reminder: EKReminder) {
-	reminder.isCompleted = !reminder.isCompleted
-}
-
 func snoozeToTomorrow(reminder: EKReminder) {
 	// Get tomorrow's date
 	let calendar = Calendar.current
@@ -33,26 +29,52 @@ func snoozeToTomorrow(reminder: EKReminder) {
 	reminder.dueDateComponents = tomorrowComponents
 }
 
+func editReminderFromStdin(reminder: EKReminder) -> Bool {
+	let input = CommandLine.arguments[1]
+	let lines = input.components(separatedBy: "\n")
+
+	let newTitle = lines.first ?? ""
+	if newTitle == "" {
+		print("❌ No title.")
+		return false
+	}
+	let newBody = lines.dropFirst()
+		.joined(separator: "\n")
+		.trimmingCharacters(in: .whitespaces)
+
+	reminder.notes = newBody == "" ? nil : newBody
+
+	reminder.title = newTitle
+	print(newTitle)  // for Alfred notification
+	return true
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 
 eventStore.requestFullAccessToReminders { granted, error in
 	if let reminder = eventStore.calendarItem(withIdentifier: reminderId) as? EKReminder {
 
-		// modify
+		// MODIFY
 		if mode == "toggle-completed" {
-			toggleCompleted(reminder: reminder)
+			reminder.isCompleted = !reminder.isCompleted
 		} else if mode == "snooze" {
 			snoozeToTomorrow(reminder: reminder)
+		} else if mode == "edit-reminder" {
+			let success = editReminderFromStdin(reminder: reminder)
+			if !success { return }
+		} else {
+			print("Unknown mode: ", mode)
+			return
 		}
 
-		// save
+		// SAVE
 		do {
 			try eventStore.save(reminder, commit: true)
 		} catch {
 			print("❌ Failed to save updated reminder: \(error.localizedDescription)")
 		}
 	} else {
-		print("⚠️ Reminder not found with ID: \(reminderId)\n")
+		print("⚠️ No reminder found with ID: \(reminderId)\n")
 	}
 	semaphore.signal()
 }

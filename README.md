@@ -8,10 +8,8 @@ Display and edit reminders due today.
 
 ## Info on version 2.0
 Due to the underlying tool (`reminder-cli`) being abandoned, I rewrote this
-workflow to work fully standalone. This has the drawback that adding from
-selection/browser tabs and editing reminders features had to be removed.
-
-Note that this workflow now **requires at least macOS 14**.
+workflow to work fully standalone. Note that this workflow now **requires at
+least macOS 14**.
 
 On the upside, this workflow now does not require `reminders-cli` anymore, so
 you can uninstall it:
@@ -27,14 +25,15 @@ brew untap keith/formulae
   triggering.
 	+ <kbd>⏎</kbd>: Complete the reminder.
 	+ <kbd>⌘⏎</kbd>: If the reminder has a URL, open it in the default browser,
-	  otherwise, copy the reminder's text to the clipboard. Afterward, complete
-	  the reminder.
+	  otherwise, copy the reminder's title & notes to the clipboard. Afterward,
+	  complete the reminder.
 	+ <kbd>⇧⏎</kbd>: "Snooze" the reminder by changing its due date to tomorrow.
+	+ <kbd>⌥⏎</kbd>: Edit the reminders title and body.
 	+ <kbd>⌃⏎</kbd>: Display completed reminders due today as well. Using
 	  <kbd>⏎</kbd> on a completed reminder marks it as uncompleted. The other
 	  modifiers work the same as with uncompleted reminders. Use <kbd>⌃⏎</kbd>
 	  once more to hide completed reminders again.
-	+ <kbd>⌘C</kbd>: Copy the reminder details (title, notes, URL).
+	+ <kbd>⌘C</kbd>: Copy the reminder title & notes.
 	+ <kbd>⌘L</kbd>: Display the reminder details in Large Type.
 - Quickly add a new reminder due today or tomorrow with the keywords `qq` and
   `qqq`, respectively.
