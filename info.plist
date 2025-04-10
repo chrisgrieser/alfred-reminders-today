@@ -1030,6 +1030,7 @@ If you are not prompted to add them, try:
 	  once more to hide completed reminders again.
 	+ &lt;kbd&gt;⌘C&lt;/kbd&gt;: Copy the reminder title &amp; notes.
 	+ &lt;kbd&gt;⌘L&lt;/kbd&gt;: Display the reminder details in Large Type.
+	+ &lt;kbd&gt;⌘Y&lt;/kbd&gt;: Quick Look the URL (if there is one).
 - Quickly add a new reminder due today or tomorrow with the keywords `qq` and
   `qqq`, respectively.
 

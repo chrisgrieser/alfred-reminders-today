@@ -36,6 +36,7 @@ brew untap keith/formulae
 	  once more to hide completed reminders again.
 	+ <kbd>⌘C</kbd>: Copy the reminder title & notes.
 	+ <kbd>⌘L</kbd>: Display the reminder details in Large Type.
+	+ <kbd>⌘Y</kbd>: Quick Look the URL (if there is one).
 - Quickly add a new reminder due today or tomorrow with the keywords `qq` and
   `qqq`, respectively.
 
