@@ -1,8 +1,9 @@
 # Alfred: Reminders Today
 ![Download count](https://img.shields.io/github/downloads/chrisgrieser/alfred-reminders-today/total?label=Total%20Downloads&style=plastic)
 ![Version number](https://img.shields.io/github/v/release/chrisgrieser/alfred-reminders-today?label=Latest%20Release&style=plastic)
+<!-- ![Alfred gallery downloads](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fchrisgrieser%2F.config%2Frefs%2Fheads%2Fmain%2FAlfred.alfredpreferences%2Falfred-workflow-download-count.yaml&query=alfred-reminders-today&style=plastic&logo=alfred&label=Gallery%20Downloads&color=%235C1F87)-->
 
-Display and edit reminders due today.
+Display and add reminders due today.
 
 <img alt="Showcase" width=70% src="https://github.com/user-attachments/assets/627ef6de-8fe9-4710-8352-2c63e4be5e67">
 
