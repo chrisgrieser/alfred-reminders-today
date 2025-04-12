@@ -28,31 +28,28 @@ const isToday = (/** @type {Date?} */ aDate) => {
  * @return {string} relative date
  */
 function relativeDate(absDate) {
-	const deltaSecs = (Date.now() - +absDate) / 1000;
-	/** @type {"year"|"month"|"week"|"day"|"hour"|"minute"|"second"} */
+	const deltaMins = (Date.now() - +absDate) / 1000 / 60;
+	/** @type {"year"|"month"|"week"|"day"|"hour"|"minute"} */
 	let unit;
 	let delta;
-	if (deltaSecs < 60) {
-		unit = "second";
-		delta = deltaSecs;
-	} else if (deltaSecs < 60 * 60) {
+	if (deltaMins < 60) {
 		unit = "minute";
-		delta = Math.floor(deltaSecs / 60);
-	} else if (deltaSecs < 60 * 60 * 24) {
+		delta = deltaMins;
+	} else if (deltaMins < 60 * 24) {
 		unit = "hour";
-		delta = Math.floor(deltaSecs / 60 / 60);
-	} else if (deltaSecs < 60 * 60 * 24 * 7) {
+		delta = Math.floor(deltaMins / 60);
+	} else if (deltaMins < 60 * 24 * 7) {
 		unit = "day";
-		delta = Math.floor(deltaSecs / 60 / 60 / 24);
-	} else if (deltaSecs < 60 * 60 * 24 * 7 * 4) {
+		delta = Math.floor(deltaMins / 60 / 24);
+	} else if (deltaMins < 60 * 24 * 7 * 4) {
 		unit = "week";
-		delta = Math.floor(deltaSecs / 60 / 60 / 24 / 7);
-	} else if (deltaSecs < 60 * 60 * 24 * 7 * 4 * 12) {
+		delta = Math.floor(deltaMins / 60 / 24 / 7);
+	} else if (deltaMins < 60 * 24 * 7 * 4 * 12) {
 		unit = "month";
-		delta = Math.floor(deltaSecs / 60 / 60 / 24 / 7 / 4);
+		delta = Math.floor(deltaMins / 60 / 24 / 7 / 4);
 	} else {
 		unit = "year";
-		delta = Math.floor(deltaSecs / 60 / 60 / 24 / 7 / 4 / 12);
+		delta = Math.floor(deltaMins / 60 / 24 / 7 / 4 / 12);
 	}
 	const formatter = new Intl.RelativeTimeFormat("en", { style: "long", numeric: "auto" });
 	return formatter.format(-delta, unit);
