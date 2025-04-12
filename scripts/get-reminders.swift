@@ -1,3 +1,6 @@
+// DOCS https://developer.apple.com/documentation/eventkit/ekreminder/
+// ─────────────────────────────────────────────────────────────────────────────
+
 import EventKit
 import Foundation
 
@@ -49,9 +52,11 @@ eventStore.requestFullAccessToReminders { granted, error in
 		return
 	}
 
-	// DOCS https://developer.apple.com/documentation/eventkit/ekreminder/
-	// Get reminders from the list and format them
+	// Get Reminders DOCS https://developer.apple.com/documentation/eventkit/retrieving-events-and-reminders#Fetch-Reminders
+	// (using `predicateForIncompleteReminders` has no performance benefit, so
+	// skipping logic to conditionally use it instead.)
 	let predicate = eventStore.predicateForReminders(in: selectedCalendars)
+
 	eventStore.fetchReminders(matching: predicate) { reminders in
 		guard let reminders = reminders else {
 			print("[]")
