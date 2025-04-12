@@ -33,7 +33,6 @@ eventStore.requestFullAccessToReminders { granted, error in
 		semaphore.signal()
 		return
 	}
-
 	// ──────────────────────────────────────────────────────────────────────────
 
 	// Get list specified or use all lists
@@ -49,6 +48,7 @@ eventStore.requestFullAccessToReminders { granted, error in
 		return
 	}
 
+	// DOCS https://developer.apple.com/documentation/eventkit/ekreminder/
 	// Get reminders from the list and format them
 	let predicate = eventStore.predicateForReminders(in: selectedCalendars)
 	eventStore.fetchReminders(matching: predicate) { reminders in
@@ -67,7 +67,7 @@ eventStore.requestFullAccessToReminders { granted, error in
 				id: reminder.calendarItemIdentifier,
 				title: reminder.title ?? "(No Title)",
 				notes: reminder.notes,
-				url: reminder.url?.absoluteString,
+				url: reminder.url?.absoluteString,  // CAVEAT Reminders.app itself does not store URL there
 				list: reminder.calendar.title,
 				dueDate: components?.date.flatMap { formatter.string(from: $0) },
 				creationDate: reminder.creationDate.flatMap { formatter.string(from: $0) },
