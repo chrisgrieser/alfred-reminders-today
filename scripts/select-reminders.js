@@ -37,22 +37,22 @@ function relativeDate(absDate) {
 		delta = deltaSecs;
 	} else if (deltaSecs < 60 * 60) {
 		unit = "minute";
-		delta = Math.ceil(deltaSecs / 60);
+		delta = Math.floor(deltaSecs / 60);
 	} else if (deltaSecs < 60 * 60 * 24) {
 		unit = "hour";
-		delta = Math.ceil(deltaSecs / 60 / 60);
+		delta = Math.floor(deltaSecs / 60 / 60);
 	} else if (deltaSecs < 60 * 60 * 24 * 7) {
 		unit = "day";
-		delta = Math.ceil(deltaSecs / 60 / 60 / 24);
+		delta = Math.floor(deltaSecs / 60 / 60 / 24);
 	} else if (deltaSecs < 60 * 60 * 24 * 7 * 4) {
 		unit = "week";
-		delta = Math.ceil(deltaSecs / 60 / 60 / 24 / 7);
+		delta = Math.floor(deltaSecs / 60 / 60 / 24 / 7);
 	} else if (deltaSecs < 60 * 60 * 24 * 7 * 4 * 12) {
 		unit = "month";
-		delta = Math.ceil(deltaSecs / 60 / 60 / 24 / 7 / 4);
+		delta = Math.floor(deltaSecs / 60 / 60 / 24 / 7 / 4);
 	} else {
 		unit = "year";
-		delta = Math.ceil(deltaSecs / 60 / 60 / 24 / 7 / 4 / 12);
+		delta = Math.floor(deltaSecs / 60 / 60 / 24 / 7 / 4 / 12);
 	}
 	const formatter = new Intl.RelativeTimeFormat("en", { style: "long", numeric: "auto" });
 	return formatter.format(-delta, unit);
