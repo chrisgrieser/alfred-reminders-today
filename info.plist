@@ -1021,7 +1021,8 @@ If you are not prompted to add them, try:
 	+ &lt;kbd&gt;⏎&lt;/kbd&gt;: Complete the reminder.
 	+ &lt;kbd&gt;⌘⏎&lt;/kbd&gt;: If the reminder has a URL, open it in the default browser,
 	  otherwise, copy the reminder's title &amp; notes to the clipboard. Afterward,
-	  complete the reminder.
+	  complete the reminder. (Note that only URLs in title or notes are
+	  supported, since the URL field of a reminder is not accessible.)
 	+ &lt;kbd&gt;⇧⏎&lt;/kbd&gt;: "Snooze" the reminder by changing its due date to tomorrow.
 	+ &lt;kbd&gt;⌥⏎&lt;/kbd&gt;: Edit the reminders title and body in Alfred's Text View.
 	  The first line is the reminder's title, the remaining lines the notes.
@@ -1031,7 +1032,7 @@ If you are not prompted to add them, try:
 	  once more to hide completed reminders again.
 	+ &lt;kbd&gt;⌘C&lt;/kbd&gt;: Copy the reminder title &amp; notes.
 	+ &lt;kbd&gt;⌘L&lt;/kbd&gt;: Display the reminder details in Large Type.
-	+ &lt;kbd&gt;⌘Y&lt;/kbd&gt;: Quick Look the URL (if there is one).
+	+ &lt;kbd&gt;⌘Y&lt;/kbd&gt;: Quick Look the URL, if there is one.
 - Quickly add a new reminder due today or tomorrow with the keywords `qq` and
   `qqq`, respectively.
 

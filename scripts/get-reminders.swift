@@ -2,10 +2,11 @@ import EventKit
 import Foundation
 
 struct ReminderOutput: Codable {
+	// CAVEAT Reminders.app itself does not store URLs in the `url` field, so
+	// retrieving that is pointless
 	let id: String
 	let title: String
 	let notes: String?
-	let url: String?
 	let list: String
 	let dueDate: String?
 	let creationDate: String?
@@ -67,7 +68,6 @@ eventStore.requestFullAccessToReminders { granted, error in
 				id: reminder.calendarItemIdentifier,
 				title: reminder.title ?? "(No Title)",
 				notes: reminder.notes,
-				url: reminder.url?.absoluteString,  // CAVEAT Reminders.app itself does not store URL there
 				list: reminder.calendar.title,
 				dueDate: components?.date.flatMap { formatter.string(from: $0) },
 				creationDate: reminder.creationDate.flatMap { formatter.string(from: $0) },

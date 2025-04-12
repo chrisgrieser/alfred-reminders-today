@@ -27,7 +27,8 @@ brew untap keith/formulae
 	+ <kbd>⏎</kbd>: Complete the reminder.
 	+ <kbd>⌘⏎</kbd>: If the reminder has a URL, open it in the default browser,
 	  otherwise, copy the reminder's title & notes to the clipboard. Afterward,
-	  complete the reminder.
+	  complete the reminder. (Note that only URLs in title or notes are
+	  supported, since the URL field of a reminder is not accessible.)
 	+ <kbd>⇧⏎</kbd>: "Snooze" the reminder by changing its due date to tomorrow.
 	+ <kbd>⌥⏎</kbd>: Edit the reminders title and body in Alfred's Text View.
 	  The first line is the reminder's title, the remaining lines the notes.
@@ -37,7 +38,7 @@ brew untap keith/formulae
 	  once more to hide completed reminders again.
 	+ <kbd>⌘C</kbd>: Copy the reminder title & notes.
 	+ <kbd>⌘L</kbd>: Display the reminder details in Large Type.
-	+ <kbd>⌘Y</kbd>: Quick Look the URL (if there is one).
+	+ <kbd>⌘Y</kbd>: Quick Look the URL, if there is one.
 - Quickly add a new reminder due today or tomorrow with the keywords `qq` and
   `qqq`, respectively.
 
