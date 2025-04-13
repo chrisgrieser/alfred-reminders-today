@@ -88,7 +88,12 @@ function run() {
 			const completedAndDueToday = showCompleted && rem.isCompleted && isToday(dueDate);
 			return openAndDueBeforeToday || completedAndDueToday || openNoDueDate;
 		})
-		.sort((a, b) => +new Date(a.creationDate) - +new Date(b.creationDate));
+		.sort((a, b) => {
+			// first sort by due date, then by creation date
+			const dueTimeDiff = +new Date(a.dueDate) - +new Date(b.dueDate);
+			if (dueTimeDiff !== 0) return dueTimeDiff;
+			return +new Date(a.creationDate) - +new Date(b.creationDate);
+		});
 	console.log("Filtered reminders:", JSON.stringify(remindersFiltered, null, 2));
 
 	/** @type {AlfredItem[]} */
