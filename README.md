@@ -7,7 +7,7 @@ Display and add reminders due today.
 
 <img alt="Showcase" width=70% src="https://github.com/user-attachments/assets/627ef6de-8fe9-4710-8352-2c63e4be5e67">
 
-## Info on version 2.0
+## Info when upgrading from version 1.x to version 2.x
 Due to the underlying tool (`reminder-cli`) being abandoned, I rewrote this
 workflow to work fully standalone. Note that this workflow now **requires at
 least macOS 14**.
@@ -41,6 +41,9 @@ brew untap keith/formulae
 	+ <kbd>⌘Y</kbd>: Quick Look the URL, if there is one.
 - Quickly add a new reminder due today or tomorrow with the keywords `qq` and
   `qqq`, respectively.
+	+ The command supports simple parsing of a due time with the format
+	  `hh:mm`. For instance, `19:00 buy milk` or `buy milk 19:00` will set the
+	  due time to `19:00` and the reminder title to `buy milk`.
 
 [➡️ Download the latest release of this
 workflow.](https://github.com/chrisgrieser/alfred-reminders-today/releases/latest)
