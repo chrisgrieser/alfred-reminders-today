@@ -14,6 +14,7 @@ app.includeStandardAdditions = true;
  * @property {string} creationDate
  * @property {string} isAllDay
  * @property {boolean} hasRecurrenceRules
+ * @property {number} priority
  */
 
 const isToday = (/** @type {Date?} */ aDate) => {
@@ -89,7 +90,9 @@ function run() {
 			return openAndDueBeforeToday || completedAndDueToday || openNoDueDate;
 		})
 		.sort((a, b) => {
-			// first sort by due date, then by creation date
+			// 1. by priority, 2. by due date, 3. by creation date
+			const prioDiff = b.priority - a.priority;
+			if (prioDiff !== 0) return prioDiff;
 			const dueTimeDiff = +new Date(a.dueDate) - +new Date(b.dueDate);
 			if (dueTimeDiff !== 0) return dueTimeDiff;
 			return +new Date(a.creationDate) - +new Date(b.creationDate);
@@ -113,6 +116,8 @@ function run() {
 		const missingDueDate = rem.dueDate ? "" : "no due date";
 		const listName = includeAllLists ? rem.list : ""; // only display when more than 1
 		const subtitle = [
+			rem.hasRecurrenceRules ? "🔁" : "",
+			"!".repeat(rem.priority),
 			listName,
 			dueTime || pastDueDate || missingDueDate,
 			body.replace(/\n+/g, " "),
@@ -120,8 +125,7 @@ function run() {
 			.filter(Boolean)
 			.join("  ·  ");
 
-		let emoji = rem.isCompleted ? "☑️ " : "";
-		if (rem.hasRecurrenceRules) emoji += "🔁 ";
+		const emoji = rem.isCompleted ? "☑️ " : "";
 
 		// INFO the boolean are all stringified, so they are available as "true"
 		// and "false" after stringification, instead of the less clear "1" and "0"
