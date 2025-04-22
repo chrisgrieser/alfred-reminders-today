@@ -1443,11 +1443,36 @@ to set a hotkey to show reminders due today</string>
 			<key>description</key>
 			<string>Note that including events will make the `rem` command slightly slower.</string>
 			<key>label</key>
-			<string></string>
+			<string>Events</string>
 			<key>type</key>
 			<string>checkbox</string>
 			<key>variable</key>
 			<string>show_events</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>defaultvalue</key>
+				<integer>20</integer>
+				<key>markercount</key>
+				<integer>59</integer>
+				<key>maxvalue</key>
+				<integer>120</integer>
+				<key>minvalue</key>
+				<integer>4</integer>
+				<key>onlystoponmarkers</key>
+				<true/>
+				<key>showmarkers</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>Duration calendar events will be cached in minutes. If your events are out of date often, decrease this value.</string>
+			<key>label</key>
+			<string></string>
+			<key>type</key>
+			<string>slider</string>
+			<key>variable</key>
+			<string>event_cache_duration</string>
 		</dict>
 		<dict>
 			<key>config</key>
