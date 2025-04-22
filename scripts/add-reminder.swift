@@ -25,7 +25,7 @@ func parseTimeAndMessage(from input: String) -> ParsedResult? {
 	guard
 		let match = regex.firstMatch(in: msg, range: NSRange(msg.startIndex..., in: msg))
 	else {
-		// No time found — use entire input as message if not empty
+		// no time found -> use entire input as message
 		return msg.isEmpty
 			? nil : ParsedResult(hour: nil, minute: nil, message: msg)
 	}
