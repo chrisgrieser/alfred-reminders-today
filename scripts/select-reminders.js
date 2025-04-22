@@ -275,16 +275,18 @@ function run() {
 				event.hasRecurrenceRules ? "🔁" : "",
 				time,
 				event.location ? "📍 " + event.location : "",
-				"📅 " + event.calendar,
+				`(${event.calendar})`,
 			]
 				.filter(Boolean)
-				.join("   ");
+				.join("    ");
 
+			const invalid = { valid: false, subtitle: "⛔ Not available for events." };
 			return {
 				title: event.title,
 				subtitle: subtitle,
 				icon: { path: "./calendar.png" },
 				valid: false, // events are read-only
+				mods: { cmd: invalid, shift: invalid, alt: invalid, fn: invalid },
 			};
 		});
 		writeToFile(eventCachePath, JSON.stringify(events));
