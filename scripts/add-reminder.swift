@@ -66,7 +66,7 @@ eventStore.requestFullAccessToReminders { granted, error in
 	// Create a new reminder
 	let parsed = parseTimeAndMessage(from: input)
 	guard parsed != nil else {
-		print("❌ Invalid input: '\(input)'")
+		print("❌ Invalid time: \"\(input)\"")
 		semaphore.signal()
 		return
 	}
@@ -105,10 +105,9 @@ eventStore.requestFullAccessToReminders { granted, error in
 	}
 
 	// Find the calendar (list) by name
-	if let calendarList = eventStore.calendars(for: .reminder).first(where: {
-		$0.title == reminderList
-	}) {
-		reminder.calendar = calendarList
+	let listToUse = eventStore.calendars(for: .reminder).first(where: { $0.title == reminderList })
+	if listToUse != nil {
+		reminder.calendar = listToUse
 	} else {
 		print("❌ No calendar found with the name \"\(reminderList)\".")
 		semaphore.signal()
@@ -119,7 +118,7 @@ eventStore.requestFullAccessToReminders { granted, error in
 	do {
 		try eventStore.save(reminder, commit: true)
 		var alfredNotif = title
-		if hh != nil {
+		if hh != nil && mm != nil {
 			let minutePadded = String(format: "%02d", mm!)
 			alfredNotif = "\(hh!):\(minutePadded) — \(title)"
 		}

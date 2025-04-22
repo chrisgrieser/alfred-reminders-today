@@ -251,7 +251,7 @@ function run() {
 		console.log("Writing new cache for events…");
 
 		let /** @type {EventObj[]} */ eventsJson;
-		const swiftEventsOutput = app.doShellScript("swift ./scripts/events-today.swift");
+		const swiftEventsOutput = app.doShellScript("swift ./scripts/get-events-today.swift");
 		try {
 			eventsJson = JSON.parse(swiftEventsOutput);
 		} catch (_error) {
