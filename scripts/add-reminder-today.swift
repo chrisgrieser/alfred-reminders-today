@@ -19,7 +19,7 @@ struct ParsedResult {
 
 func parseTimeAndMessage(from input: String) -> ParsedResult? {
 	var msg = input.trimmingCharacters(in: .whitespacesAndNewlines)
-	let pattern = #"(?<!\d)(\d{1,2}):(\d{1,2})(?!\d)"#
+	let pattern = #"(?<!\d)(\d{1,2}):(\d{2})(?!\d)"#
 	let regex = try! NSRegularExpression(pattern: pattern)
 
 	guard
