@@ -39,6 +39,8 @@ brew untap keith/formulae
 	+ <kbd>⌘C</kbd>: Copy the reminder title & notes.
 	+ <kbd>⌘L</kbd>: Display the reminder details in Large Type.
 	+ <kbd>⌘Y</kbd>: Quick Look the URL, if there is one.
+	+ *(if the item is an event)* <kbd>⏎</kbd>: If the location is a URL, open
+	  the URL. Otherwise, open Google Maps with the location.
 - Quickly add a new reminder due today or tomorrow with the keywords `qq` and
   `qqq`, respectively.
 	+ The command supports simple parsing of a due time with the format
