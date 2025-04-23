@@ -52,7 +52,7 @@ func editReminderFromStdin(reminder: EKReminder) -> Bool {
 // ─────────────────────────────────────────────────────────────────────────────
 
 eventStore.requestFullAccessToReminders { granted, error in
-	// no permission check, since already done in previous swift script
+	// INFO No permission check needed, since already done in previous swift script.
 
 	if let reminder = eventStore.calendarItem(withIdentifier: reminderId) as? EKReminder {
 
@@ -65,7 +65,7 @@ eventStore.requestFullAccessToReminders { granted, error in
 			let success = editReminderFromStdin(reminder: reminder)
 			if !success { return }
 		} else {
-			print("Unknown mode: ", mode)
+			print("❌ Unknown mode: ", mode)
 			return
 		}
 
