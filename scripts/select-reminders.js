@@ -20,6 +20,7 @@ app.includeStandardAdditions = true;
 /** @typedef {Object} EventObj
  * @property {string} title
  * @property {string} calendar
+ * @property {string} calendarColor
  * @property {string} startTime
  * @property {string} endTime
  * @property {boolean} isAllDay
@@ -279,7 +280,7 @@ function run() {
 			// location
 			const maxLen = 40;
 			const url = event.location?.match(urlRegex);
-			const icon = url ? "🎦" : "📍";
+			const icon = url ? "🌐" : "📍";
 			let locationDisplay = event.location?.replaceAll("\n", " ") || "";
 			if (locationDisplay.length > maxLen)
 				locationDisplay = locationDisplay.slice(0, maxLen) + "…";
@@ -290,7 +291,7 @@ function run() {
 				event.hasRecurrenceRules ? "🔁" : "",
 				timeDisplay,
 				locationDisplay,
-				`[${event.calendar}]`,
+				event.calendarColor + " " + event.calendar,
 			]
 				.filter(Boolean)
 				.join("    ");

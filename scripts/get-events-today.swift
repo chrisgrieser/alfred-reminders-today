@@ -9,12 +9,49 @@ struct EventOutput: Codable {
 	let endTime: String
 	let isAllDay: Bool
 	let calendar: String
+	let calendarColor: String
 	let location: String?
 	let hasRecurrenceRules: Bool
 }
 
 let eventStore = EKEventStore()
 let semaphore = DispatchSemaphore(value: 0)
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+func mapCGColorToBaseColor(_ cgColor: CGColor) -> String {
+	let components = cgColor.components!
+	let (r, g, b) = (components[0], components[1], components[2])
+
+	// Simple thresholds for mapping RGB to base colors
+	let redDiff = abs(r - 1.0) + g + b
+	let greenDiff = r + abs(g - 1.0) + b
+	let blueDiff = r + g + abs(b - 1.0)
+	let yellowDiff = abs(r - 1.0) + abs(g - 1.0) + b
+	let purpleDiff = abs(r - 1.0) + g + abs(b - 1.0)
+	let orangeDiff = abs(r - 1.0) + abs(g - 0.6) + b
+	let brownDiff = abs(r - 0.6) + abs(g - 0.4) + abs(b - 0.2)
+
+	// Increase the ranges for white and black by reducing weights for differences
+	let whiteDiff = 0.7 * abs(r - 1.0) + 0.7 * abs(g - 1.0) + 0.7 * abs(b - 1.0)
+	let blackDiff = 0.7 * r + 0.7 * g + 0.7 * b
+
+	let diffs = [
+		(redDiff, "🔴"),
+		(greenDiff, "🟢"),
+		(blueDiff, "🔵"),
+		(yellowDiff, "🟡"),
+		(purpleDiff, "🟣"),
+		(orangeDiff, "🟠"),
+		(brownDiff, "🟤"),
+		(whiteDiff, "⚪"),
+		(blackDiff, "⚫"),
+	]
+
+	let closest = diffs.min { $0.0 < $1.0 }
+	return closest?.1 ?? "unknown"
+}
+  
 
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -45,12 +82,15 @@ eventStore.requestFullAccessToEvents { granted, error in
 		.filter { event in return event.endDate > now }  // only future or ongoing events
 		.sorted(by: { $0.startDate < $1.startDate })
 		.map { event in
-			EventOutput(
+			let baseColor = mapCGColorToBaseColor(event.calendar.cgColor)
+			// let baseColor = event.calendar.cgColor.hashValue
+			return EventOutput(
 				title: event.title,
 				startTime: formatter.string(from: event.startDate),
 				endTime: formatter.string(from: event.endDate),
 				isAllDay: event.isAllDay,
 				calendar: event.calendar.title,
+				calendarColor: baseColor,
 				location: event.location ?? event.url?.absoluteString,  // fallback to URL
 				hasRecurrenceRules: event.hasRecurrenceRules
 			)
