@@ -52,7 +52,15 @@ func editReminderFromStdin(reminder: EKReminder) -> Bool {
 // ─────────────────────────────────────────────────────────────────────────────
 
 eventStore.requestFullAccessToReminders { granted, error in
-	// INFO No permission check needed, since already done in previous swift script.
+	guard error == nil && granted else {
+		let msg =
+			error != nil
+			? "Error requesting access: \(error!.localizedDescription)"
+			: "Access to Calendar events not granted."
+		print("❌ " + msg)
+		semaphore.signal()
+		return
+	}
 
 	if let reminder = eventStore.calendarItem(withIdentifier: reminderId) as? EKReminder {
 

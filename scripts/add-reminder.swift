@@ -51,13 +51,12 @@ func parseTimeAndMessage(from input: String) -> ParsedResult? {
 // ─────────────────────────────────────────────────────────────────────────────
 
 eventStore.requestFullAccessToReminders { granted, error in
-	if let error = error {
-		print("❌ Error requesting access: \(error.localizedDescription)")
-		semaphore.signal()
-		return
-	}
-	guard granted else {
-		print("❌ Access to Reminders not granted.")
+	guard error == nil && granted else {
+		let msg =
+			error != nil
+			? "Error requesting access: \(error!.localizedDescription)"
+			: "Access to Calendar events not granted."
+		print("❌ " + msg)
 		semaphore.signal()
 		return
 	}
@@ -71,6 +70,7 @@ eventStore.requestFullAccessToReminders { granted, error in
 		return
 	}
 	let (title, hh, mm) = (parsed!.message, parsed!.hour, parsed!.minute)
+	let hasDueTime = hh != nil && mm != nil
 	let reminder = EKReminder(eventStore: eventStore)
 	reminder.title = title
 	reminder.isCompleted = false
@@ -99,10 +99,7 @@ eventStore.requestFullAccessToReminders { granted, error in
 	// Add an alarm to trigger a notification. Even though the reminder created
 	// without an alarm looks the same as one with an alarm, an alarm is needed
 	// to trigger the notification (see #2).
-	if hh != nil && mm != nil {
-		let alarm = EKAlarm(relativeOffset: 0)  // Fire at due date
-		reminder.addAlarm(alarm)
-	}
+	if hasDueTime { reminder.addAlarm(EKAlarm()) }
 
 	// Find the calendar (list) by name
 	let listToUse = eventStore.calendars(for: .reminder).first(where: { $0.title == reminderList })
@@ -118,7 +115,7 @@ eventStore.requestFullAccessToReminders { granted, error in
 	do {
 		try eventStore.save(reminder, commit: true)
 		var alfredNotif = title
-		if hh != nil && mm != nil {
+		if hasDueTime {
 			let minutePadded = String(format: "%02d", mm!)
 			alfredNotif = "\(hh!):\(minutePadded) — \(title)"
 		}
