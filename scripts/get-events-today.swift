@@ -55,7 +55,7 @@ eventStore.requestFullAccessToEvents { granted, error in
 			endTime: formatter.string(from: event.endDate),
 			isAllDay: event.isAllDay,
 			calendar: event.calendar.title,
-			location: event.location,
+			location: event.location ?? event.url?.absoluteString, // fallback to URL
 			hasRecurrenceRules: event.hasRecurrenceRules
 		)
 	}
