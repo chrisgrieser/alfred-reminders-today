@@ -39,13 +39,13 @@ brew untap keith/formulae
 	+ <kbd>⌘C</kbd>: Copy the reminder title & notes.
 	+ <kbd>⌘L</kbd>: Display the reminder details in Large Type.
 	+ <kbd>⌘Y</kbd>: Quick Look the URL, if there is one.
-	+ *(if the item is an event)* <kbd>⏎</kbd>: If the location is a URL, open
-	  the URL. Otherwise, open Google Maps with the location.
+	+ <kbd>⏎</kbd> *(on an event)*: If the location is a URL, open the URL.
+	  Otherwise, open Google Maps with the location.
 - Quickly add a new reminder due today or tomorrow with the keywords `qq` and
   `qqq`, respectively.
-	+ The command supports simple parsing of a due time with the format
-	  `hh:mm`. For instance, `19:00 buy milk` or `buy milk 19:00` will set the
-	  due time to `19:00` and the reminder title to `buy milk`.
+	+ The command supports simple parsing of a due time with the format `hh:mm`.
+	  For instance, `19:00 buy milk` or `buy milk 19:00` will set the due time
+	  to `19:00` and the reminder title to `buy milk`.
 
 [➡️ Download the latest release of this
 workflow.](https://github.com/chrisgrieser/alfred-reminders-today/releases/latest)
