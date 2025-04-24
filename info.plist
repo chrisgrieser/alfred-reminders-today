@@ -1033,9 +1033,8 @@ brew untap keith/formulae
 	  `hh:mm`. For instance, `19:00 buy milk` or `buy milk 19:00` will set the
 	  due time to `19:00` and the reminder title to `buy milk`.
 
-## Credits
-- Icon by [Emoopo-Design](https://macosicons.com/#/u/Emoopo-Design).
-- Workflow created by [Chris Grieser](https://chris-grieser.de/).</string>
+---
+Workflow created by [Chris Grieser](https://chris-grieser.de/).</string>
 	<key>uidata</key>
 	<dict>
 		<key>048725A0-DB75-4146-B66B-8947B03863C8</key>

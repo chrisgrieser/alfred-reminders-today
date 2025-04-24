@@ -50,9 +50,6 @@ brew untap keith/formulae
 [➡️ Download the latest release of this
 workflow.](https://github.com/chrisgrieser/alfred-reminders-today/releases/latest)
 
-## Credits
-Icon by [Emoopo-Design](https://macosicons.com/#/u/Emoopo-Design)
-
 ## About the developer
 In my day job, I am a sociologist studying the social mechanisms underlying the
 digital economy. For my PhD project, I investigate the governance of the app
