@@ -9,6 +9,7 @@ app.includeStandardAdditions = true;
  * @property {string} title
  * @property {string?} notes aka body
  * @property {string} list
+ * @property {string} listColor
  * @property {boolean} isCompleted
  * @property {string} dueDate
  * @property {string} creationDate
@@ -168,7 +169,7 @@ function run() {
 		const dueTime = rem.isAllDay ? "" : new Date(rem.dueDate).toLocaleTimeString([], timeFmt);
 		const pastDueDate = dueDateObj < startOfToday ? relativeDate(dueDateObj) : "";
 		const missingDueDate = rem.dueDate ? "" : "no due date";
-		const listName = includeAllLists ? rem.list : ""; // only display when more than 1
+		const listName = includeAllLists ? rem.listColor + " " + rem.list : "";
 		const subtitle = [
 			rem.hasRecurrenceRules ? "🔁" : "",
 			"❗️".repeat(rem.priority), // white exclamation mark not visible in many themes
