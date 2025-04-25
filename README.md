@@ -25,10 +25,9 @@ brew untap keith/formulae
   [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/) for faster
   triggering.
 	+ <kbd>⏎</kbd>: Complete the reminder.
-	+ <kbd>⌘⏎</kbd>: If the reminder has a URL, open it in the default browser,
-	  otherwise, copy the reminder's title & notes to the clipboard. Afterward,
-	  complete the reminder. (Note that only URLs in title or notes are
-	  supported, since the URL field of a reminder is not accessible.)
+	+ <kbd>⌘⏎</kbd>: If the reminder has a URL in title or notes, open it in the
+	  default browser. Otherwise, copy the reminder's title & notes to the
+	  clipboard. Afterward, complete the reminder.
 	+ <kbd>⇧⏎</kbd>: "Snooze" the reminder by changing its due date to tomorrow.
 	+ <kbd>⌥⏎</kbd>: Edit the reminders title and body in Alfred's Text View.
 	  The first line is the reminder's title, the remaining lines the notes.
@@ -50,13 +49,21 @@ brew untap keith/formulae
 [➡️ Download the latest release of this
 workflow.](https://github.com/chrisgrieser/alfred-reminders-today/releases/latest)
 
+## Limitations
+Apple's `EventKit` API does not offer access to various Reminder features, which
+is why this workflow cannot support the following features:
+
+- The `URL` field of a reminder is not accessible, so only URLs in the title or
+  notes are supported.
+- A reminder's tags, attachments, and flag-status are not accessible.
+
 ## About the developer
 In my day job, I am a sociologist studying the social mechanisms underlying the
 digital economy. For my PhD project, I investigate the governance of the app
 economy and how software ecosystems manage the tension between innovation and
 compatibility. If you are interested in this subject, feel free to get in touch.
 
-- [Academic website](https://chris-grieser.de/)
+- [Website](https://chris-grieser.de/)
 - [Mastodon](https://pkm.social/@pseudometa)
 - [ResearchGate](https://www.researchgate.net/profile/Christopher-Grieser)
 - [LinkedIn](https://www.linkedin.com/in/christopher-grieser-ba693b17a/)
