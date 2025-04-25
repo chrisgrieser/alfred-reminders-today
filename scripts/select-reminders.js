@@ -171,7 +171,7 @@ function run() {
 		const listName = includeAllLists ? rem.list : ""; // only display when more than 1
 		const subtitle = [
 			rem.hasRecurrenceRules ? "🔁" : "",
-			"!".repeat(rem.priority),
+			"❗️".repeat(rem.priority), // white exclamation mark not visible in many themes
 			listName,
 			dueTime || pastDueDate || missingDueDate,
 			body.replace(/\n+/g, " "),
