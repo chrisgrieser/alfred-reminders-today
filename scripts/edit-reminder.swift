@@ -21,6 +21,17 @@ func snoozeToTomorrow(reminder: EKReminder) {
 	reminder.dueDateComponents!.year = tomorrowComponents.year
 	reminder.dueDateComponents!.month = tomorrowComponents.month
 	reminder.dueDateComponents!.day = tomorrowComponents.day
+
+	// Adjust alarm as well
+	if let alarms = reminder.alarms {
+		for (index, alarm) in alarms.enumerated() {
+			// Apple Reminders use absolute dates as alarm, not relative offset; we mimic that
+			if let absoluteDate = alarm.absoluteDate {
+				let tomorrowAlarm = calendar.date(byAdding: .day, value: 1, to: absoluteDate)!
+				alarms[index].absoluteDate = tomorrowAlarm
+			}
+		}
+	}
 }
 
 func editReminderFromStdin(reminder: EKReminder) -> Bool {
