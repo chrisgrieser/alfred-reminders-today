@@ -96,9 +96,11 @@ eventStore.requestFullAccessToReminders { granted, error in
 	}
 
 	// Get reminders from the list and format them. https://developer.apple.com/documentation/eventkit/retrieving-events-and-reminders#Fetch-Reminders
-	// PERF using `predicateForIncompleteReminders` has no noticeable performance
-	// benefit, however, it does reduce the number of items the JXA script later
-	// has to process, resulting in ~0.1s speedup.
+	// * PERF using `predicateForIncompleteReminders` has no noticeable performance
+	//   benefit, however, it does reduce the number of items the JXA script later
+	//   has to process, resulting in ~0.1s speedup.
+	// * do not set an `ending` date, since otherwise reminders without due date
+	//   are not included
 	let predicate =
 		showCompleted
 		? eventStore.predicateForReminders(in: selectedCalendars)
