@@ -10,7 +10,7 @@ struct ReminderOutput: Codable {
 	let title: String
 	let notes: String?
 	let list: String
-	let listColor: String
+	let listColor: String?  // for performance, only calculated if `includeAllLists` is true
 	let dueDate: String?
 	let creationDate: String?
 	let isAllDay: Bool
@@ -133,7 +133,7 @@ eventStore.requestFullAccessToReminders { granted, error in
 				title: reminder.title,
 				notes: reminder.notes,
 				list: reminder.calendar.title,
-				listColor: mapCGColorToEmoji(reminder.calendar.cgColor),
+				listColor: includeAllLists ? mapCGColorToEmoji(reminder.calendar.cgColor) : nil,
 				dueDate: components?.date.flatMap { formatter.string(from: $0) },
 				creationDate: reminder.creationDate.flatMap { formatter.string(from: $0) },
 				isAllDay: components?.hour == nil && components?.minute == nil,
