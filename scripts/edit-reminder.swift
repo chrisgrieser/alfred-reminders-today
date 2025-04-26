@@ -14,10 +14,13 @@ func snoozeToTomorrow(reminder: EKReminder) {
 	let tomorrow = calendar.date(byAdding: .day, value: 1, to: Date())!
 	let tomorrowComponents = calendar.dateComponents([.year, .month, .day], from: tomorrow)
 
-	// Only change the YYYY-MM-DD, since the HH:MM should be preserved. 
-	reminder.dueDateComponents?.year = tomorrowComponents.year
-	reminder.dueDateComponents?.month = tomorrowComponents.month
-	reminder.dueDateComponents?.day = tomorrowComponents.day
+	// reminders with no due date need to a due date component first
+	if reminder.dueDateComponents == nil { reminder.dueDateComponents = tomorrowComponents }
+
+	// Only change the YYYY-MM-DD, since the HH:MM should be preserved.
+	reminder.dueDateComponents!.year = tomorrowComponents.year
+	reminder.dueDateComponents!.month = tomorrowComponents.month
+	reminder.dueDateComponents!.day = tomorrowComponents.day
 }
 
 func editReminderFromStdin(reminder: EKReminder) -> Bool {
