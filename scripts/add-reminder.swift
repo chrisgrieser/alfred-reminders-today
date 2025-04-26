@@ -70,7 +70,7 @@ eventStore.requestFullAccessToReminders { granted, error in
 		return
 	}
 	let (title, hh, mm) = (parsed!.message, parsed!.hour, parsed!.minute)
-	let hasDueTime = hh != nil && mm != nil
+	let isAllDayReminder = (hh == nil && hh == nil) 
 	let reminder = EKReminder(eventStore: eventStore)
 	reminder.title = title
 	reminder.isCompleted = false
@@ -99,11 +99,13 @@ eventStore.requestFullAccessToReminders { granted, error in
 	// * Add an alarm to trigger a notification. Even though the reminder created
 	//   without an alarm looks the same as one with an alarm, an alarm is needed
 	//   to trigger the notification (see #2).
-	// * The alarm is always added, whether all-day reminders do get a
-	//   notification or not is determined by the user's reminder settings.
-	// * `relativeOffset` means relative to the start date of the reminder 
-	//   https://developer.apple.com/documentation/eventkit/ekalarm/relativeoffset
-	reminder.addAlarm(EKAlarm(relativeOffset: 0))
+	// * Whether all-day remidners do get a notification or not is determined by
+	//   by the user's reminder settings; adding an alarm to all-day reminders
+	//   would enforce a notification, regardless of the setting, so we add the
+	//   alarm only if the reminder is not all-day.
+	if !isAllDayReminder { 
+		reminder.addAlarm(EKAlarm(relativeOffset: 0)) // * `relativeOffset` is to start date https://developer.apple.com/documentation/eventkit/ekalarm/relativeoffset
+	}
 
 	// Find the calendar (list) by name
 	let listToUse = eventStore.calendars(for: .reminder).first(where: { $0.title == reminderList })
@@ -119,7 +121,7 @@ eventStore.requestFullAccessToReminders { granted, error in
 	do {
 		try eventStore.save(reminder, commit: true)
 		var alfredNotif = title
-		if hasDueTime {
+		if !isAllDayReminder {
 			let minutePadded = String(format: "%02d", mm!)
 			alfredNotif = "\(hh!):\(minutePadded) — \(title)"
 		}
