@@ -70,7 +70,7 @@ eventStore.requestFullAccessToReminders { granted, error in
 		return
 	}
 	let (title, hh, mm) = (parsed!.message, parsed!.hour, parsed!.minute)
-	let isAllDayReminder = (hh == nil && hh == nil) 
+	let isAllDayReminder = (hh == nil && hh == nil)
 	let reminder = EKReminder(eventStore: eventStore)
 	reminder.title = title
 	reminder.isCompleted = false
@@ -92,9 +92,12 @@ eventStore.requestFullAccessToReminders { granted, error in
 
 	// Set due date
 	var dateComponents = calendar.dateComponents([.year, .month, .day], from: dayToUse)
-	dateComponents.hour = hh  // hour & minute are nil -> all-day reminder
-	dateComponents.minute = mm
+	if !isAllDayReminder {
+		dateComponents.hour = hh
+		dateComponents.minute = mm
+	}
 	reminder.dueDateComponents = dateComponents
+	reminder.startDateComponents = nil  // reminders created regularly have no start date, we mimic that
 
 	// * Add an alarm to trigger a notification. Even though the reminder created
 	//   without an alarm looks the same as one with an alarm, an alarm is needed
@@ -103,8 +106,11 @@ eventStore.requestFullAccessToReminders { granted, error in
 	//   by the user's reminder settings; adding an alarm to all-day reminders
 	//   would enforce a notification, regardless of the setting, so we add the
 	//   alarm only if the reminder is not all-day.
-	if !isAllDayReminder { 
-		reminder.addAlarm(EKAlarm(relativeOffset: 0)) // * `relativeOffset` is to start date https://developer.apple.com/documentation/eventkit/ekalarm/relativeoffset
+	if !isAllDayReminder {
+		// Apple reminders use absolute dates as alarm, not relative offset; so we
+		// mimic that here.
+		let dueDate = calendar.date(from: dateComponents)!
+		reminder.addAlarm(EKAlarm(absoluteDate: dueDate))
 	}
 
 	// Find the calendar (list) by name
