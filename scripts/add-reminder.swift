@@ -1,5 +1,6 @@
 #!/usr/bin/env swift
 import EventKit
+import WidgetKit
 import Foundation
 
 let eventStore = EKEventStore()
