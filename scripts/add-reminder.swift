@@ -1,7 +1,7 @@
 #!/usr/bin/env swift
 import EventKit
-import WidgetKit
 import Foundation
+import WidgetKit
 
 let eventStore = EKEventStore()
 let semaphore = DispatchSemaphore(value: 0)
@@ -16,37 +16,50 @@ struct ParsedResult {
 	let hour: Int?
 	let minute: Int?
 	let message: String
+	let bangs: String  // string with the number of exclamation marks
 }
 
-func parseTimeAndMessage(from input: String) -> ParsedResult? {
+func parseTimeAndPriorityAndMessage(from input: String) -> ParsedResult? {
 	var msg = input.trimmingCharacters(in: .whitespacesAndNewlines)
-	let pattern = #"(?<!\d)(\d{1,2}):(\d{2})(?!\d)"#
-	let regex = try! NSRegularExpression(pattern: pattern)
+	guard !msg.isEmpty else { return nil }
 
-	guard
-		let match = regex.firstMatch(in: msg, range: NSRange(msg.startIndex..., in: msg))
-	else {
-		// no time found -> use entire input as message
-		return msg.isEmpty
-			? nil : ParsedResult(hour: nil, minute: nil, message: msg)
+	// parse leading/trailing bangs for priority
+	var bangs = ""  // default: no priority
+	let bangPattern = #"^!+|!+$"#
+	let bangRegex = try! NSRegularExpression(pattern: bangPattern)
+
+	if let match = bangRegex.firstMatch(in: msg, range: NSRange(msg.startIndex..., in: msg)),
+		let matchRange = Range(match.range, in: msg)
+	{
+		bangs = String(msg[matchRange])
+		msg.removeSubrange(matchRange)
 	}
 
-	guard
-		let hrRange = Range(match.range(at: 1), in: msg),
-		let minRange = Range(match.range(at: 2), in: msg),
-		let timeRange = Range(match.range, in: msg),
-		let hour = Int(msg[hrRange]),
-		let minute = Int(msg[minRange]),
-		(0..<24).contains(hour),
-		(0..<60).contains(minute)
-	else {
-		return nil  // Invalid time
+	// parse HH:MM for due time
+	var hour: Int? = nil
+	var minute: Int? = nil
+	let timePattern = #"(?<!\d)(\d{1,2}):(\d{2})(?!\d)"#
+	let timeRegex = try! NSRegularExpression(pattern: timePattern)
+
+	if let match = timeRegex.firstMatch(in: msg, range: NSRange(msg.startIndex..., in: msg)) {
+		if let hrRange = Range(match.range(at: 1), in: msg),
+			let minRange = Range(match.range(at: 2), in: msg),
+			let timeRange = Range(match.range, in: msg),
+			let parsedHour = Int(msg[hrRange]),
+			let parsedMinute = Int(msg[minRange]),
+			(0..<24).contains(parsedHour),
+			(0..<60).contains(parsedMinute)
+		{
+			hour = parsedHour
+			minute = parsedMinute
+			msg.removeSubrange(timeRange)
+		} else {
+			return nil  // invalid time
+		}
 	}
 
-	msg.removeSubrange(timeRange)
 	msg = msg.trimmingCharacters(in: .whitespacesAndNewlines)
-
-	return msg.isEmpty ? nil : ParsedResult(hour: hour, minute: minute, message: msg)
+	return ParsedResult(hour: hour, minute: minute, message: msg, bangs: bangs)
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -64,17 +77,25 @@ eventStore.requestFullAccessToReminders { granted, error in
 	// ──────────────────────────────────────────────────────────────────────────
 
 	// Create a new reminder
-	let parsed = parseTimeAndMessage(from: input)
+	let parsed = parseTimeAndPriorityAndMessage(from: input)
 	guard parsed != nil else {
 		print("❌ Invalid time: \"\(input)\"")
 		semaphore.signal()
 		return
 	}
-	let (title, hh, mm) = (parsed!.message, parsed!.hour, parsed!.minute)
+	let (title, hh, mm, bangs) = (parsed!.message, parsed!.hour, parsed!.minute, parsed!.bangs)
 	let isAllDayReminder = (hh == nil && hh == nil)
 	let reminder = EKReminder(eventStore: eventStore)
 	reminder.title = title
 	reminder.isCompleted = false
+
+	// priority
+	reminder.priority = 0  // default: no priority
+	switch bangs.count {  // values based on RFC 5545, which Apple uses https://www.rfc-editor.org/rfc/rfc5545.html#section-3.8.1.9
+	case 1: reminder.priority = 9
+	case 2: reminder.priority = 5
+	default: reminder.priority = 1
+	}
 
 	// determine day when to add
 	let calendar = Calendar.current
@@ -126,11 +147,20 @@ eventStore.requestFullAccessToReminders { granted, error in
 	// Save
 	do {
 		try eventStore.save(reminder, commit: true)
-		var alfredNotif = title
+
+		// notification for Alfred
+		var msgComponents: [String] = []
 		if !isAllDayReminder {
-			let minutePadded = String(format: "%02d", mm!)
-			alfredNotif = "\(hh!):\(minutePadded) — \(title)"
+			let minutesPadded = String(format: "%02d", mm!)
+			msgComponents.append("\(hh!):\(minutesPadded)")
 		}
+		if !bangs.isEmpty {
+			let shortBangs = String(bangs.prefix(3))  // max 3 is valid as priority
+			msgComponents.append(shortBangs)
+		}
+		msgComponents.append("\"\(title)\"")
+
+		let alfredNotif = msgComponents.joined(separator: "   ·   ")
 		print(alfredNotif)
 	} catch {
 		print("❌ Failed to create reminder: \(error.localizedDescription)")
