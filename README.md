@@ -7,19 +7,6 @@ Display and add reminders due today.
 
 <img alt="Showcase" width=70% src="https://github.com/user-attachments/assets/627ef6de-8fe9-4710-8352-2c63e4be5e67">
 
-## Info when upgrading from version 1.x to version 2.x
-Due to the underlying tool (`reminder-cli`) being abandoned, I rewrote this
-workflow to work fully standalone. Note that this workflow now **requires at
-least macOS 14**.
-
-If you used the workflow before version 2.0, it now does not require
-`reminders-cli` anymore, so you can uninstall it:
-
-```bash
-brew uninstall keith/formulae/reminders-cli
-brew untap keith/formulae
-```
-
 ## Usage
 - Display reminders due today (or overdue) via the keyword `rem`. Configure the
   [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/) for faster
