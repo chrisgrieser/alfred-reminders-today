@@ -56,6 +56,8 @@ is why this workflow cannot support the following features:
 - The `URL` field of a reminder is not accessible, so only URLs in the title or
   notes are supported.
 - A reminder's tags, attachments, and flag-status are not accessible.
+- The macOS Reminders widget shown at the notification center or desktop do not
+  update when reminders are added or changed via this workflow.
 
 ## About the developer
 In my day job, I am a sociologist studying the social mechanisms underlying the
