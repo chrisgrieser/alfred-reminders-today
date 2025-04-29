@@ -1617,6 +1617,25 @@ to set a hotkey to show reminders due today</string>
 			<key>config</key>
 			<dict>
 				<key>default</key>
+				<false/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>use 12 hour time</string>
+			</dict>
+			<key>description</key>
+			<string>displays "8:00 PM" instead of "20:00"</string>
+			<key>label</key>
+			<string>Time format</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>hour_12_format</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
 				<string>rem</string>
 				<key>placeholder</key>
 				<string>rem</string>
