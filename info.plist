@@ -519,7 +519,7 @@
 				<key>scriptfile</key>
 				<string>./scripts/select-reminders.js</string>
 				<key>subtext</key>
-				<string>Show reminders due today {var:reminder_list}</string>
+				<string>Show reminders due today</string>
 				<key>title</key>
 				<string>{const:alfred_workflow_name}</string>
 				<key>type</key>
