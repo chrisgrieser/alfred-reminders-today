@@ -31,10 +31,11 @@ Display and add reminders due today.
   `qqq`, respectively.
 	+ The command supports simple parsing of a due time with the format `hh:mm`.
 	  For instance, `19:00 buy milk` or `buy milk 19:00` will set the due time
-	  to `19:00` and the reminder title to `buy milk`.
+	  to `19:00` and the reminder title to `buy milk`. (Due time parsing
+	  only supports the 24-hour time format.)
 	+ A priority can be specified by adding the respective number of `!` *at the
 	  end*. For example, `buy milk!` will result in a reminder title `buy milk`
-	  with a medium priority. (`!` = low, `!!` = medium, `!!!` = high)
+	  with a medium priority (`!` = low, `!!` = medium, `!!!` = high).
 
 [➡️ Download the latest release of this
 workflow.](https://github.com/chrisgrieser/alfred-reminders-today/releases/latest)
