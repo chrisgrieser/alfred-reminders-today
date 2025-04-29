@@ -26,6 +26,7 @@ let semaphore = DispatchSemaphore(value: 0)
 let reminderList = ProcessInfo.processInfo.environment["reminder_list"]!
 let includeAllLists = ProcessInfo.processInfo.environment["include_all_lists"]! == "1"
 let showCompleted = ProcessInfo.processInfo.environment["showCompleted"] == "true"  // no `!`, since not always set
+let includeNoDueDate = ProcessInfo.processInfo.environment["include_no_duedate"]! == "1"
 // ─────────────────────────────────────────────────────────────────────────────
 
 var colorMap: [String: String] = [:]
@@ -66,6 +67,19 @@ func mapCGColorToEmoji(_ cgColor: CGColor) -> String {
 	let emoji = closest?.1 ?? "?"
 	colorMap[rgbString] = emoji
 	return emoji
+}
+
+// normalize based on RFC 5545, which Apple uses https://www.rfc-editor.org/rfc/rfc5545.html#section-3.8.1.9
+func normalizePriority(_ rem: EKReminder) -> Int {
+	var prioNormalized = 0
+	if rem.priority > 5 {
+		prioNormalized = 1
+	} else if rem.priority == 5 {
+		prioNormalized = 2
+	} else if rem.priority < 5 && rem.priority > 0 {
+		prioNormalized = 3
+	}
+	return prioNormalized
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -115,35 +129,46 @@ eventStore.requestFullAccessToReminders { granted, error in
 		}
 
 		let formatter = ISO8601DateFormatter()
+		let calendar = Calendar.current
+		let today = Calendar.current.startOfDay(for: Date())
+		let tomorrow = calendar.date(byAdding: .day, value: 1, to: today)!
 
 		// DOCS https://developer.apple.com/documentation/eventkit/ekreminder/
-		let reminderData = reminders.map { reminder in
-			let components = reminder.dueDateComponents
 
-			// normalize based on RFC 5545, which Apple uses https://www.rfc-editor.org/rfc/rfc5545.html#section-3.8.1.9
-			var prioNormalized = 0
-			if reminder.priority > 5 {
-				prioNormalized = 1
-			} else if reminder.priority == 5 {
-				prioNormalized = 2
-			} else if reminder.priority < 5 && reminder.priority > 0 {
-				prioNormalized = 3
+		let reminderData =
+			reminders
+			.filter { rem in
+				let dueDate = rem.dueDateComponents?.date
+				if dueDate == nil { return includeNoDueDate && !rem.isCompleted }
+				if rem.isCompleted { return dueDate! >= today && dueDate! < tomorrow }
+				return dueDate! < tomorrow
+			}
+			.sorted { a, b in
+				let aPrio = normalizePriority(a)
+				let bPrio = normalizePriority(b)
+				if aPrio != bPrio { return aPrio > bPrio }
+				let lhsDate = a.dueDateComponents?.date ?? Date.distantFuture
+				let rhsDate = b.dueDateComponents?.date ?? Date.distantFuture
+				return lhsDate < rhsDate
 			}
 
-			return ReminderOutput(
-				id: reminder.calendarItemIdentifier,
-				title: reminder.title,
-				notes: reminder.notes,
-				list: reminder.calendar.title,
-				listColor: includeAllLists ? mapCGColorToEmoji(reminder.calendar.cgColor) : nil,
-				dueDate: components?.date.flatMap { formatter.string(from: $0) },
-				creationDate: reminder.creationDate.flatMap { formatter.string(from: $0) },
-				isAllDay: components?.hour == nil && components?.minute == nil,
-				isCompleted: reminder.isCompleted,
-				hasRecurrenceRules: reminder.hasRecurrenceRules,
-				priority: prioNormalized
-			)
-		}
+			.map { rem in
+				let components = rem.dueDateComponents
+
+				return ReminderOutput(
+					id: rem.calendarItemIdentifier,
+					title: rem.title,
+					notes: rem.notes,
+					list: rem.calendar.title,
+					listColor: includeAllLists ? mapCGColorToEmoji(rem.calendar.cgColor) : nil,
+					dueDate: components?.date.flatMap { formatter.string(from: $0) },
+					creationDate: rem.creationDate.flatMap { formatter.string(from: $0) },
+					isAllDay: components?.hour == nil && components?.minute == nil,
+					isCompleted: rem.isCompleted,
+					hasRecurrenceRules: rem.hasRecurrenceRules,
+					priority: normalizePriority(rem)
+				)
+			}
 
 		// output as stringified JSON
 		do {
@@ -156,6 +181,7 @@ eventStore.requestFullAccessToReminders { granted, error in
 		}
 		semaphore.signal()
 	}
+
 }
 
 _ = semaphore.wait(timeout: .distantFuture)
