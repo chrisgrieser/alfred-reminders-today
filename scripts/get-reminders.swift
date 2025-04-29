@@ -12,7 +12,6 @@ struct ReminderOutput: Codable {
 	let list: String
 	let listColor: String?  // for performance, only calculated if `includeAllLists` is true
 	let dueDate: String?
-	let creationDate: String?
 	let isAllDay: Bool
 	let isCompleted: Bool
 	let hasRecurrenceRules: Bool
@@ -138,12 +137,16 @@ eventStore.requestFullAccessToReminders { granted, error in
 		let reminderData =
 			reminders
 			.filter { rem in
+				// 1. not completed & due before tomorrow 
+				// 2. completed & due today (filtered above via predicate)
+				// 3. no due date & not completed (if user enabled showing no due date reminders)
 				let dueDate = rem.dueDateComponents?.date
 				if dueDate == nil { return includeNoDueDate && !rem.isCompleted }
 				if rem.isCompleted { return dueDate! >= today && dueDate! < tomorrow }
 				return dueDate! < tomorrow
 			}
 			.sorted { a, b in
+				// 1. by priority, 2. by due time, (3. by cdate, but that's default sorting)
 				let aPrio = normalizePriority(a)
 				let bPrio = normalizePriority(b)
 				if aPrio != bPrio { return aPrio > bPrio }
@@ -151,7 +154,6 @@ eventStore.requestFullAccessToReminders { granted, error in
 				let rhsDate = b.dueDateComponents?.date ?? Date.distantFuture
 				return lhsDate < rhsDate
 			}
-
 			.map { rem in
 				let components = rem.dueDateComponents
 
@@ -162,7 +164,6 @@ eventStore.requestFullAccessToReminders { granted, error in
 					list: rem.calendar.title,
 					listColor: includeAllLists ? mapCGColorToEmoji(rem.calendar.cgColor) : nil,
 					dueDate: components?.date.flatMap { formatter.string(from: $0) },
-					creationDate: rem.creationDate.flatMap { formatter.string(from: $0) },
 					isAllDay: components?.hour == nil && components?.minute == nil,
 					isCompleted: rem.isCompleted,
 					hasRecurrenceRules: rem.hasRecurrenceRules,
