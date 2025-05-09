@@ -564,7 +564,7 @@
 					</dict>
 				</array>
 				<key>elselabel</key>
-				<string>toggle complete rem.</string>
+				<string>toggle reminder</string>
 				<key>hideelse</key>
 				<false/>
 			</dict>
@@ -1096,7 +1096,8 @@ brew untap keith/formulae
 	  end on the input.
 
 ---
-Workflow created by [Chris Grieser](https://chris-grieser.de/).</string>
+
+#### Created by [Chris Grieser](https://chris-grieser.de/)   |   ⭐️ [Star on GitHub](https://github.com/chrisgrieser/alfred-reminders-today)</string>
 	<key>uidata</key>
 	<dict>
 		<key>048725A0-DB75-4146-B66B-8947B03863C8</key>
@@ -1339,7 +1340,7 @@ to set a hotkey to show reminders due today</string>
 			<key>colorindex</key>
 			<integer>7</integer>
 			<key>xpos</key>
-			<real>430</real>
+			<real>440</real>
 			<key>ypos</key>
 			<real>120</real>
 		</dict>
