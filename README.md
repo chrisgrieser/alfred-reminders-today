@@ -27,8 +27,8 @@ Display and add reminders due today.
 	+ <kbd>⌘Y</kbd>: Quick Look the URL, if there is one.
 	+ <kbd>⏎</kbd> *(on an event)*: If the location is a URL, open the URL.
 	  Otherwise, open Google Maps with the location.
-- Quickly add a new reminder due today or tomorrow with the keywords `qq`,
-  `qqq`, and `q2`, respectively.
+- Quickly add a new reminder due today or tomorrow with the keywords `qq`, `q1`,
+  and `q2`, respectively.
 	+ The command supports simple parsing of a due time with the format `hh:mm`.
 	  For instance, `19:00 buy milk` or `buy milk 19:00` will set the due time
 	  to `19:00` and the reminder title to `buy milk`. (Only times in the
