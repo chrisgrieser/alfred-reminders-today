@@ -40,13 +40,14 @@ Display and add reminders due today.
 	  the input.
 
 ## Installation
+**Note: this workflow requires at least macOS 15.**
+
 [➡️ Download the latest release of this
 workflow.](https://github.com/chrisgrieser/alfred-reminders-today/releases/latest)
 
 ## Limitations
 Apple's `EventKit` API does not offer access to various Reminder features, which
 is why this workflow cannot support the following features:
-
 - The `URL` field of a reminder is not accessible, so only URLs in the title or
   notes are supported.
 - A reminder's tags, attachments, and flag-status are not accessible.
