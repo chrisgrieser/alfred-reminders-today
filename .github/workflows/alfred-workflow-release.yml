@@ -32,6 +32,7 @@ jobs:
             ref="$root_commit"
           fi
           changelog=$(git log "$ref"..HEAD^ --format='- %s' |
+            grep --extended-regexp --invert-match '^- (build|chore|ci|release)' |
             sed -E "s/^- ([^ ]+): /- **\1**: /" | tr " " "+") # `+` to encode spaces in url
 
           new_version=$(git tag --sort=-creatordate | head -n1)
