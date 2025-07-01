@@ -16,29 +16,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        # by default, no tags and only a single commit is fetched. To use git
-        # history in the next step, we need to fetch all history.
-        with:
-          fetch-depth: 0 # 0 = all history
-          fetch-tags: true
-
-      - name: Submit update at Alfred Gallery
-        run: |
-          if [[ "$(git tag | wc -l)" -ge 2 ]]; then 
-            previous_tag=$(git tag --sort=-creatordate | sed -n "2p")
-            ref="$previous_tag"
-          else
-            root_commit=$(git rev-list --max-parents=0 HEAD)
-            ref="$root_commit"
-          fi
-          changelog=$(git log "$ref"..HEAD^ --format='- %s' |
-            sed -E "s/^- ([^ ]+): /- **\1**: /" | tr " " "+") # `+` to encode spaces in url
-
-          new_version=$(git tag --sort=-creatordate | head -n1)
-          repo=$(git remote --verbose | head -n1 | cut -f2 | cut -d":" -f2 | cut -d" " -f1 | tr -d "\n")
-          gallery_url="https://alfred.app/workflows/chrisgrieser/reminders-today"
-
-          open "https://github.com/alfredapp/gallery-edits/issues/new?template=02_update_workflow.yml&title=Update+Workflow:+$repo&gallery_url=$gallery_url&new_version=$new_version&changelog=$changelog"
 
       - name: Build .alfredworkflow
         run: |
