@@ -126,6 +126,7 @@ function run() {
 		const body = rem.notes || "";
 		const content = (rem.title + "\n" + body).trim();
 		const [url] = content.match(urlRegex) || [];
+		const displayTitle = rem.title.replace(/\n+/g, " / "); // SIC titles can have newlines
 
 		// SUBTITLE: display due time, past & missing due dates, list, and notes
 		const dueDateObj = new Date(rem.dueDate);
@@ -149,7 +150,7 @@ function run() {
 		// and "false" after stringification, instead of the less clear "1" and "0"
 		/** @type {AlfredItem} */
 		const alfredItem = {
-			title: emoji + rem.title,
+			title: emoji + displayTitle,
 			subtitle: subtitle,
 			text: { copy: content, largetype: content },
 			quicklookurl: url,
