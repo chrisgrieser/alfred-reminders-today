@@ -30,7 +30,7 @@ app.includeStandardAdditions = true;
 
 /** @param {Date} absDate @return {string} relative date */
 function relativeDate(absDate) {
-	const deltaDays = (Date.now() - +absDate) / 1000 / 60 / 60 / 24;
+	const deltaDays = (Date.now() - absDate.getTime()) / 1000 / 60 / 60 / 24;
 	/** @type {"year"|"month"|"week"|"day"} */
 	let unit;
 	let delta;
@@ -76,7 +76,7 @@ function cacheIsOutdated(path) {
 	const cacheObj = Application("System Events").aliases[path];
 	ensureCacheFolderExists();
 	if (!cacheObj.exists()) return true;
-	const cacheAgeMins = (Date.now() - +cacheObj.creationDate()) / 1000 / 60;
+	const cacheAgeMins = (Date.now() - cacheObj.creationDate().getTime()) / 1000 / 60;
 	return cacheAgeMins > cacheAgeThresholdMins;
 }
 
@@ -237,7 +237,7 @@ function run() {
 
 		// Format events for Alfred
 		events = eventsJson
-			.filter((event) => +new Date(event.endTime) > Date.now()) // exclude past events
+			.filter((event) => new Date(event.endTime).getTime() > Date.now()) // exclude past events
 			.map((event) => {
 				// time
 				let timeDisplay = "";
