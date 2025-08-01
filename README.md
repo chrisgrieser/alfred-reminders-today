@@ -38,6 +38,9 @@ Display and add reminders due today.
 	  milk` with a medium priority (`!` = low, `!!` = medium, `!!!` = high).
 	+ Note that `!` and due time are only parsed when at the start or the end on
 	  the input.
+	+ Configure the
+	  [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/) to
+	  create a reminder due today from the current selection.
 
 ## Installation
 **Note: this workflow requires at least macOS 15.**
@@ -46,7 +49,7 @@ Display and add reminders due today.
 workflow.](https://github.com/chrisgrieser/alfred-reminders-today/releases/latest)
 
 ## Limitations
-Apple's `EventKit` API does not offer access to various Reminder features, which
+Apple's `EventKit` API does not offer access to various Reminder metadata, which
 is why this workflow cannot support the following features:
 - The `URL` field of a reminder is not accessible, so only URLs in the title or
   notes are supported.
