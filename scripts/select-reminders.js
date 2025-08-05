@@ -260,7 +260,7 @@ function run() {
 				if (locationDisplay.length > maxLen)
 					locationDisplay = locationDisplay.slice(0, maxLen) + "…";
 				locationDisplay = event.location ? `${icon} ${locationDisplay}` : "";
-				let openUrl = url;
+				let openUrl = url || "";
 				if (!url && event.location) openUrl = mapProvider + encodeURIComponent(event.location);
 
 				const subtitle = [
