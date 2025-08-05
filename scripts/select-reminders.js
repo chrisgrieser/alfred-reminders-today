@@ -241,15 +241,17 @@ function run() {
 			.filter((event) => new Date(event.endTime).getTime() > Date.now()) // exclude past events
 			.map((event) => {
 				// time
+				const endOfToday = new Date().setHours(23, 59, 59);
+				const endTime = new Date(event.endTime);
+				const endsAfterToday = endTime.getTime() > endOfToday;
 				let timeDisplay = "";
 				if (!event.isAllDay) {
-					const start = event.startTime
-						? new Date(event.startTime).toLocaleTimeString([], timeFmt)
-						: "";
-					const end = event.endTime
-						? new Date(event.endTime).toLocaleTimeString([], timeFmt)
-						: "";
+					const start = new Date(event.startTime).toLocaleTimeString([], timeFmt);
+					const end = endTime.toLocaleTimeString([], timeFmt);
 					timeDisplay = start + " – " + end;
+				} else if (event.isAllDay && endsAfterToday) {
+					const daysUntilEnd = Math.ceil((endTime.getTime() - endOfToday) / 86_400_000);
+					timeDisplay = daysUntilEnd === 1 ? "ends tomorrow" : `ends in ${daysUntilEnd} days`;
 				}
 
 				// location
@@ -263,6 +265,7 @@ function run() {
 				let openUrl = url || "";
 				if (!url && event.location) openUrl = mapProvider + encodeURIComponent(event.location);
 
+				// subtitle
 				const subtitle = [
 					event.hasRecurrenceRules ? "🔁" : "",
 					timeDisplay,
