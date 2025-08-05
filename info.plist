@@ -1687,6 +1687,32 @@ to set a hotkey to show reminders due today</string>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>default</key>
+				<string>https://www.google.com/maps?q=</string>
+				<key>pairs</key>
+				<array>
+					<array>
+						<string>Google Maps</string>
+						<string>https://www.google.com/maps?q=</string>
+					</array>
+					<array>
+						<string>Apple Maps</string>
+						<string>https://maps.apple.com/place?q=</string>
+					</array>
+				</array>
+			</dict>
+			<key>description</key>
+			<string>Where to open locations</string>
+			<key>label</key>
+			<string></string>
+			<key>type</key>
+			<string>popupbutton</string>
+			<key>variable</key>
+			<string>map_provider</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>defaultvalue</key>
 				<integer>3</integer>
 				<key>markercount</key>
