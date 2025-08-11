@@ -146,13 +146,22 @@ eventStore.requestFullAccessToReminders { granted, error in
 				return dueDate! < tomorrow
 			}
 			.sorted { a, b in
-				// 1. by priority, 2. by due time, (3. by cdate, but that's default sorting)
+				// 1. completion time 2. by priority, 3. by due time,
+				// (4. by cdate, but that's default sorting)
+				if a.isCompleted != b.isCompleted { return a.isCompleted }
+				if a.completionDate != b.completionDate {
+					let aCompDate = a.completionDate ?? Date.distantFuture
+					let bCompDate = b.completionDate ?? Date.distantFuture
+					return aCompDate > bCompDate
+				}
+
 				let aPrio = normalizePriority(a)
 				let bPrio = normalizePriority(b)
-				if aPrio != bPrio { return aPrio > bPrio }
-				let lhsDate = a.dueDateComponents?.date ?? Date.distantFuture
-				let rhsDate = b.dueDateComponents?.date ?? Date.distantFuture
-				return lhsDate < rhsDate
+				if aPrio != bPrio { return aPrio < bPrio }
+
+				let aDueDate = a.dueDateComponents?.date ?? Date.distantFuture
+				let bDueDate = b.dueDateComponents?.date ?? Date.distantFuture
+				return aDueDate < bDueDate
 			}
 			.map { rem in
 				let components = rem.dueDateComponents
