@@ -123,7 +123,6 @@ eventStore.requestFullAccessToReminders { granted, error in
 		dateComponents.hour = hh
 		dateComponents.minute = mm
 	}
-
 	reminder.dueDateComponents = dateComponents
 	reminder.startDateComponents = nil  // reminders created regularly have no start date, we mimic that
 
