@@ -106,8 +106,8 @@ eventStore.requestFullAccessToReminders { granted, error in
 	if dayOffset <= 2 {
 		targetDate = calendar.date(byAdding: .day, value: dayOffset, to: today)!
 	} else {
-		// only access this part only when dayOffset > 2
-		//	This is to ensure the compability with the existing capability
+		// Only access this part when dayOffset > 2
+		//	to ensure compability with the existing capability
 		// 1 = Sunday, 2 = Monday, ... 7 = Saturday
 		// .nextTime ensures it's the next Monday (not today, even if today is Monday)
 		targetDate = calendar.nextDate(
@@ -117,7 +117,7 @@ eventStore.requestFullAccessToReminders { granted, error in
 		)!
 	}
 
-	// Set due date components
+	// Set due date
 	var dateComponents = calendar.dateComponents([.year, .month, .day], from: targetDate)
 	if !isAllDayReminder {
 		dateComponents.hour = hh
