@@ -101,30 +101,28 @@ eventStore.requestFullAccessToReminders { granted, error in
 
 	// determine day when to add
 	let calendar = Calendar.current
-   let today = Date()
-
-  	let targetDate: Date
-  	if dayOffset <= 2 {
-      targetDate = calendar.date(byAdding: .day, value: dayOffset, to: today)!
-  	} else {
+	let today = Date()
+	let targetDate: Date
+	if dayOffset <= 2 {
+		targetDate = calendar.date(byAdding: .day, value: dayOffset, to: today)!
+	} else {
 		// only access this part only when dayOffset > 2
-		// This is to ensure the compability with the existing capability
+		//	This is to ensure the compability with the existing capability
 		// 1 = Sunday, 2 = Monday, ... 7 = Saturday
-      // .nextTime ensures it's the next Monday (not today, even if today is Monday)
-      targetDate = calendar.nextDate(
-          after: today,
-          matching: DateComponents(weekday: 2),
-          matchingPolicy: .nextTime
-      )!
-  	}
+		// .nextTime ensures it's the next Monday (not today, even if today is Monday)
+		targetDate = calendar.nextDate(
+			after: today,
+			matching: DateComponents(weekday: 2),
+			matchingPolicy: .nextTime
+		)!
+	}
 
-  	// Set due date components
-  	var dateComponents = calendar.dateComponents([.year, .month, .day], from: targetDate)
-  	if !isAllDayReminder {
-   	   dateComponents.hour = hh
-      	dateComponents.minute = mm
-      	// dateComponents.second = 0 // optional
-  	}
+	// Set due date components
+	var dateComponents = calendar.dateComponents([.year, .month, .day], from: targetDate)
+	if !isAllDayReminder {
+		dateComponents.hour = hh
+		dateComponents.minute = mm
+	}
 
 	reminder.dueDateComponents = dateComponents
 	reminder.startDateComponents = nil  // reminders created regularly have no start date, we mimic that
