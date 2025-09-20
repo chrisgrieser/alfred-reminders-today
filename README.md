@@ -33,7 +33,7 @@ Display and add reminders due today.
 	  to `19:00` and the reminder title to `buy milk`. (Only times in the
 	  24-hour time format are parsed.)
 	+ A priority can be specified by adding the respective number of `!`. For
-	  example, `buy milk!` or `!buy milk` will result in a reminder title `buy
+	  example, `buy milk!!` or `!!buy milk` will result in a reminder title `buy
 	  milk` with a medium priority (`!` = low, `!!` = medium, `!!!` = high).
 	+ Note that the `!` and due time are only parsed when at the start or the end on
 	  the input.
