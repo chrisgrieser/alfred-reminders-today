@@ -27,8 +27,7 @@ Display and add reminders due today.
 	+ <kbd>⌘Y</kbd>: Quick Look the URL, if there is one.
 	+ <kbd>⏎</kbd> *(on an event)*: If the location is a URL, open the URL.
 	  Otherwise, open Google Maps with the location.
-- Quickly add a new reminder due today or tomorrow with the keywords `qq`, `q1`,
-  and `q2`, respectively.
+- Quickly add a new reminder due today the keyword `qq`.
 	+ The command supports simple parsing of a due time with the format `hh:mm`.
 	  For instance, `19:00 buy milk` or `buy milk 19:00` will set the due time
 	  to `19:00` and the reminder title to `buy milk`. (Only times in the
@@ -36,8 +35,10 @@ Display and add reminders due today.
 	+ A priority can be specified by adding the respective number of `!`. For
 	  example, `buy milk!` or `!buy milk` will result in a reminder title `buy
 	  milk` with a medium priority (`!` = low, `!!` = medium, `!!!` = high).
-	+ Note that `!` and due time are only parsed when at the start or the end on
+	+ Note that the `!` and due time are only parsed when at the start or the end on
 	  the input.
+	+ Use `q1` create the reminder tomorrow, `q2` for the day after tomorrow,
+	  and `qm` for next Monday. All keywords are configurable.
 	+ Configure the
 	  [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/) to
 	  create a reminder due today from the current selection.
