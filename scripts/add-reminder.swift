@@ -173,8 +173,10 @@ eventStore.requestFullAccessToReminders { granted, error in
 		}
 		if !isAllDayReminder {
 			let minutesPadded = String(format: "%02d", mm!)
-			let hourDisplay = String(hh == 0 || (amPm == "pm" && hh! != 12) ? hh! + 12 : hh!)
-			let timeStr = hourDisplay + ":" + minutesPadded + amPm
+			var hourDisplay = hh!
+			if amPm == "am" && hh! == 0 { hourDisplay = 12 }
+			if amPm == "pm" && hh! != 12 { hourDisplay = hh! - 12 }
+			let timeStr = String(hourDisplay) + ":" + minutesPadded + amPm
 			msg.append(timeStr)
 		}
 		msg.append("\"\(title)\"")
