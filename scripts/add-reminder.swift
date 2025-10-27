@@ -24,41 +24,39 @@ func parseTimeAndPriorityAndMessage(from input: String) -> ParsedResult? {
 
 	// parse leading/trailing bangs for priority
 	var bangs = ""  // default: no priority
-	let bangPattern = #"^!+|!+$"#
-	let bangRegex = try! NSRegularExpression(pattern: bangPattern)
-
-	if let match = bangRegex.firstMatch(in: msg, range: NSRange(msg.startIndex..., in: msg)),
-		let matchRange = Range(match.range, in: msg)
-	{
-		bangs = String(msg[matchRange])
-		msg.removeSubrange(matchRange)
+	let bangRegex = try! Regex(#"^!+|!+$"#)
+	if let match = try? bangRegex.firstMatch(in: msg) {
+		bangs = String(msg[match.range])
+		msg.removeSubrange(match.range)
 	}
 
 	// parse HH:MM for due time, if at start or end of input
-	var hour: Int? = nil
-	var minute: Int? = nil
-	let timePattern = #"^(\d{1,2}):(\d{2})(?!\d)|(?<!\d)(\d{1,2}):(\d{2})$"#
-	let timeRegex = try! NSRegularExpression(pattern: timePattern)
+	var hour: Int?
+	var minute: Int?
+	let timeAtStart = #"^(\d{1,2}):(\d{2})(?!\d)"# 
+	let timeAtEnd = #"[^\d](\d{1,2}):(\d{2})$"#
+	let timeRegex = try! Regex(timeAtStart + "|" + timeAtEnd)
 
-	if let match = timeRegex.firstMatch(in: msg, range: NSRange(msg.startIndex..., in: msg)) {
-		// Extract the first or second pair of captured groups
-		let hrRange = Range(match.range(at: 1), in: msg) ?? Range(match.range(at: 3), in: msg)
-		let minRange = Range(match.range(at: 2), in: msg) ?? Range(match.range(at: 4), in: msg)
+	if let match = try? timeRegex.firstMatch(in: msg) {
+		let h1 = match.output[1].substring ?? ""
+		let m1 = match.output[2].substring ?? ""
+		let h2 = match.output[3].substring ?? ""
+		let m2 = match.output[4].substring ?? ""
+		let hourStr = !h1.isEmpty ? h1 : h2
+		let minuteStr = !m1.isEmpty ? m1 : m2
 
-		if let hrRange = hrRange, let minRange = minRange,
-			let parsedHour = Int(msg[hrRange]),
-			let parsedMinute = Int(msg[minRange]),
-			(0..<24).contains(parsedHour),
-			(0..<60).contains(parsedMinute)
+		if let hourVal = Int(hourStr),
+			let minuteVal = Int(minuteStr),
+			(0..<24).contains(hourVal),
+			(0..<60).contains(minuteVal)
 		{
-			hour = parsedHour
-			minute = parsedMinute
-			if let timeRange = Range(match.range, in: msg) { msg.removeSubrange(timeRange) }
+			hour = Int(hourStr)
+			minute = Int(minuteStr)
+			msg.removeSubrange(match.range)
 		} else {
-			return nil  // invalid time
+			return nil
 		}
 	}
-
 	msg = msg.trimmingCharacters(in: .whitespacesAndNewlines)
 	return ParsedResult(hour: hour, minute: minute, message: msg, bangs: bangs)
 }
