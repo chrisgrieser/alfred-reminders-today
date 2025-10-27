@@ -16,6 +16,7 @@ struct ParsedResult {
 	let minute: Int?
 	let message: String
 	let bangs: String  // string with the number of exclamation marks
+	let amPm: String
 }
 
 func parseTimeAndPriorityAndMessage(from input: String) -> ParsedResult? {
@@ -30,35 +31,42 @@ func parseTimeAndPriorityAndMessage(from input: String) -> ParsedResult? {
 		msg.removeSubrange(match.range)
 	}
 
-	// parse HH:MM for due time, if at start or end of input
+	// parse HH:MM(am|pm) for due time, if at start or end of input
 	var hour: Int?
 	var minute: Int?
-	let timeAtStart = #"^(\d{1,2}):(\d{2})(?!\d)"# 
-	let timeAtEnd = #"[^\d](\d{1,2}):(\d{2})$"#
-	let timeRegex = try! Regex(timeAtStart + "|" + timeAtEnd)
+	var amPm = ""
+	let timePattern = #"(\d{1,2}):(\d{2})(?: ?(am|pm|AM|PM))?"#
+	let timeRegex = try! Regex("^\(timePattern) | \(timePattern)$")
 
 	if let match = try? timeRegex.firstMatch(in: msg) {
 		let h1 = match.output[1].substring ?? ""
 		let m1 = match.output[2].substring ?? ""
-		let h2 = match.output[3].substring ?? ""
-		let m2 = match.output[4].substring ?? ""
+		let amPm1 = match.output[3].substring ?? ""
+		let h2 = match.output[4].substring ?? ""
+		let m2 = match.output[5].substring ?? ""
+		let amPm2 = match.output[6].substring ?? ""
 		let hourStr = !h1.isEmpty ? h1 : h2
 		let minuteStr = !m1.isEmpty ? m1 : m2
+		let hasAmPm = !amPm1.isEmpty || !amPm2.isEmpty
 
 		if let hourVal = Int(hourStr),
 			let minuteVal = Int(minuteStr),
-			(0..<24).contains(hourVal),
-			(0..<60).contains(minuteVal)
+			(0..<60).contains(minuteVal),
+			(!hasAmPm && (0..<24).contains(hourVal)) || (hasAmPm && (1..<13).contains(hourVal))
 		{
-			hour = Int(hourStr)
-			minute = Int(minuteStr)
+			amPm = String(!amPm1.isEmpty ? amPm1 : amPm2).lowercased()
+			hour = hourVal
+			if (amPm == "pm" && hour != 12) || (amPm == "am" && hour == 12) {
+				hour = (hour! + 12) % 24
+			}
+			minute = minuteVal
 			msg.removeSubrange(match.range)
 		} else {
 			return nil
 		}
 	}
 	msg = msg.trimmingCharacters(in: .whitespacesAndNewlines)
-	return ParsedResult(hour: hour, minute: minute, message: msg, bangs: bangs)
+	return ParsedResult(hour: hour, minute: minute, message: msg, bangs: bangs, amPm: amPm)
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -82,7 +90,9 @@ eventStore.requestFullAccessToReminders { granted, error in
 		semaphore.signal()
 		return
 	}
-	let (title, hh, mm, bangs) = (parsed!.message, parsed!.hour, parsed!.minute, parsed!.bangs)
+	let (title, hh, mm, bangs, amPm) = (
+		parsed!.message, parsed!.hour, parsed!.minute, parsed!.bangs, parsed!.amPm
+	)
 	let isAllDayReminder = (hh == nil && hh == nil)
 	let reminder = EKReminder(eventStore: eventStore)
 	reminder.title = title
@@ -164,7 +174,9 @@ eventStore.requestFullAccessToReminders { granted, error in
 		}
 		if !isAllDayReminder {
 			let minutesPadded = String(format: "%02d", mm!)
-			msgComponents.append("\(hh!):\(minutesPadded)")
+			let hourDisplay = String(hh == 0 || (amPm == "pm" && hh! != 12) ? hh! + 12 : hh!)
+			let timeStr = hourDisplay + ":" + minutesPadded + amPm
+			msgComponents.append(timeStr)
 		}
 		msgComponents.append("\"\(title)\"")
 

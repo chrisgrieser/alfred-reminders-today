@@ -30,13 +30,14 @@ Display and add reminders due today.
 - Quickly add a new reminder due today the keyword `qq`.
 	+ The command supports simple parsing of a due time with the format `hh:mm`.
 	  For instance, `19:00 buy milk` or `buy milk 19:00` will set the due time
-	  to `19:00` and the reminder title to `buy milk`. (Only times in the
-	  24-hour time format are parsed.)
+	  to `19:00` and the reminder title to `buy milk`.
+	+ 12-hour time like `buy milk 3:00pm` is also supported. (However, hour-only
+	  formats like `buy milk 3pm` are not supported.)
 	+ A priority can be specified by adding the respective number of `!`. For
 	  example, `buy milk!!` or `!!buy milk` will result in a reminder title `buy
 	  milk` with a medium priority (`!` = low, `!!` = medium, `!!!` = high).
-	+ Note that the `!` and due time are only parsed when at the start or the end on
-	  the input.
+	+ Note that priority and due time are only parsed when at the start or the
+	  end on the input.
 	+ Use `q1` create the reminder tomorrow, `q2` for the day after tomorrow,
 	  and `qm` for next Monday. All keywords are configurable.
 	+ Configure the
