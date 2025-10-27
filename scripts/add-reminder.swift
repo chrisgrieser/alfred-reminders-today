@@ -25,7 +25,7 @@ func parseTimeAndPriorityAndMessage(from input: String) -> ParsedResult? {
 
 	// parse leading/trailing bangs for priority
 	var bangs = ""  // default: no priority
-	let bangRegex = try! Regex(#"^!+|!+$"#)
+	let bangRegex = try! Regex(#"^!{1,3}|!{1,3}$"#)
 	if let match = try? bangRegex.firstMatch(in: msg) {
 		bangs = String(msg[match.range])
 		msg.removeSubrange(match.range)
@@ -167,20 +167,19 @@ eventStore.requestFullAccessToReminders { granted, error in
 		try eventStore.save(reminder, commit: true)
 
 		// notification for Alfred
-		var msgComponents: [String] = []
+		var msg: [String] = []
 		if !bangs.isEmpty {
-			let shortBangs = String(bangs.prefix(3))  // max 3 is valid as priority
-			msgComponents.append(shortBangs)
+			msg.append(bangs)
 		}
 		if !isAllDayReminder {
 			let minutesPadded = String(format: "%02d", mm!)
 			let hourDisplay = String(hh == 0 || (amPm == "pm" && hh! != 12) ? hh! + 12 : hh!)
 			let timeStr = hourDisplay + ":" + minutesPadded + amPm
-			msgComponents.append(timeStr)
+			msg.append(timeStr)
 		}
-		msgComponents.append("\"\(title)\"")
+		msg.append("\"\(title)\"")
 
-		let alfredNotif = msgComponents.joined(separator: "     ")
+		let alfredNotif = msg.joined(separator: "     ")
 		print(alfredNotif)
 	} catch {
 		print("❌ Failed to create reminder: \(error.localizedDescription)")
