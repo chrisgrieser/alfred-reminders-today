@@ -31,37 +31,43 @@ func parseTimeAndPriorityAndMessage(from input: String) -> ParsedResult? {
 		msg.removeSubrange(match.range)
 	}
 
-	// parse HH:MM(am|pm) for due time, if at start or end of input
+	// parse due time, if at start or end of input
 	var hour: Int?
 	var minute: Int?
 	var amPm = ""
-	let timePattern = #"(\d{1,2}):(\d{2})(?: ?(am|pm|AM|PM))?"#
-	let timeRegex = try! Regex("^\(timePattern) | \(timePattern)$")
 
-	if let match = try? timeRegex.firstMatch(in: msg) {
-		let h1 = match.output[1].substring ?? ""
-		let m1 = match.output[2].substring ?? ""
-		let amPm1 = match.output[3].substring ?? ""
-		let h2 = match.output[4].substring ?? ""
-		let m2 = match.output[5].substring ?? ""
-		let amPm2 = match.output[6].substring ?? ""
-		let hourStr = !h1.isEmpty ? h1 : h2
-		let minuteStr = !m1.isEmpty ? m1 : m2
-		let hasAmPm = !amPm1.isEmpty || !amPm2.isEmpty
+	let hhmmPattern = #"(\d{1,2}):(\d{2}) ?(am|pm|AM|PM)?"#
+	let hhmmRegex = try! Regex("^\(hhmmPattern) | \(hhmmPattern)$")
+	let hhmmMatch = try? hhmmRegex.firstMatch(in: msg)
+
+	let hhPattern = #"(\d{1,2}) ?()(am|pm|AM|PM)"# // empty capture group, so later code is the same
+	let hhRegex = try! Regex("^\(hhPattern) | \(hhPattern)$")
+	let hhMatch = try? hhRegex.firstMatch(in: msg)
+
+	if let match = hhmmMatch ?? hhMatch {
+		let h1 = match.output[1].substring
+		let m1 = match.output[2].substring
+		let amPm1 = match.output[3].substring
+		let h2 = match.output[4].substring
+		let m2 = match.output[5].substring
+		let amPm2 = match.output[6].substring
+		let hourStr = h1 ?? h2 ?? ""
+		let minuteStr =  hhmmMatch != nil ? (m1 ?? m2 ?? "") : "00"
+		let hasAmPm = amPm1 != nil || amPm2 != nil
 
 		if let hourVal = Int(hourStr),
 			let minuteVal = Int(minuteStr),
 			(0..<60).contains(minuteVal),
 			(!hasAmPm && (0..<24).contains(hourVal)) || (hasAmPm && (1..<13).contains(hourVal))
 		{
-			amPm = String(!amPm1.isEmpty ? amPm1 : amPm2).lowercased()
+			amPm = String(amPm1 ?? amPm2 ?? "").lowercased()
 			hour = hourVal
 			if amPm == "pm" && hour != 12 { hour! += 12 }
 			if amPm == "am" && hour == 12 { hour = 0 }
 			minute = minuteVal
 			msg.removeSubrange(match.range)
 		} else {
-			return nil
+			return nil  // invalid time
 		}
 	}
 	msg = msg.trimmingCharacters(in: .whitespacesAndNewlines)
