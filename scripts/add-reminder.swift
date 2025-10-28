@@ -34,12 +34,11 @@ func parseTimeAndPriorityAndMessage(from input: String) -> ParsedResult? {
 	var minute: Int?
 	var amPm = ""
 
-	
 	// parse due time
 	let hhmmPattern = #"(\d{1,2}):(\d{2}) ?(am|pm|AM|PM)?"#
 	let hhPattern = #"(\d{1,2}) ?()(am|pm|AM|PM)"#  // empty capture group, so later code is the same
 	let patterns = [
-		try! Regex("^\(hhmmPattern) "), // only if at start/end of input
+		try! Regex("^\(hhmmPattern) "),  // only if at start/end of input
 		try! Regex("^\(hhPattern) "),
 		try! Regex(" \(hhmmPattern)$"),
 		try! Regex(" \(hhPattern)$"),
@@ -79,8 +78,8 @@ eventStore.requestFullAccessToReminders { granted, error in
 	guard error == nil && granted else {
 		let msg =
 			error != nil
-			? "Error requesting access: \(error!.localizedDescription)"
-			: "Access to Calendar events not granted."
+			? "Error requesting access: " + error!.localizedDescription
+			: "Access to Reminder.app not granted."
 		print("❌ " + msg)
 		semaphore.signal()
 		return
