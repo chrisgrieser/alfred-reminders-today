@@ -100,27 +100,29 @@ func parseTimeAndPriorityAndMessage(input: String, remForToday: Bool) -> ParsedR
 // ─────────────────────────────────────────────────────────────────────────────
 
 eventStore.requestFullAccessToReminders { granted, error in
-	guard error == nil && granted else {
-		let msg =
-			error != nil
-			? "Error requesting access: " + error!.localizedDescription
-			: "Access to Reminder.app not granted."
+	func fail(_ msg: String) {
 		print("❌ " + msg)
 		semaphore.signal()
+	}
+
+	guard error == nil else {
+		fail("Error requesting access: " + error!.localizedDescription)
+		return
+	}
+	guard granted else {
+		fail("Access to Reminder.app not granted.")
 		return
 	}
 	guard !input.isEmpty else {
-		print("❌ Input is empty.")
-		semaphore.signal()
+		fail("Input is empty.")
 		return
 	}
 
 	// PARSE INPUT
 	let remForToday = targetDay == "0"
 	let parsed = parseTimeAndPriorityAndMessage(input: input, remForToday: remForToday)
-	if let error = parsed.errorMsg {
-		print("❌ " + error)
-		semaphore.signal()
+	guard parsed.errorMsg == nil else {
+		fail(parsed.errorMsg!)
 		return
 	}
 	let (title, hh, mm, bangs, amPm) = (
@@ -191,8 +193,7 @@ eventStore.requestFullAccessToReminders { granted, error in
 	if listToUse != nil {
 		reminder.calendar = listToUse
 	} else {
-		print("❌ No calendar found with the name \"\(reminderList)\".")
-		semaphore.signal()
+		fail("No calendar found with the name \"\(reminderList)\".")
 		return
 	}
 
@@ -200,8 +201,7 @@ eventStore.requestFullAccessToReminders { granted, error in
 	do {
 		try eventStore.save(reminder, commit: true)
 	} catch {
-		print("❌ Failed to create reminder: \(error.localizedDescription)")
-		semaphore.signal()
+		fail("Failed to create reminder: " + error.localizedDescription)
 		return
 	}
 
