@@ -35,7 +35,7 @@ func parseTimeAndPriorityAndMessage(from input: String) -> ParsedResult? {
 	var amPm = ""
 
 	// parse due time
-	let hhmmPattern = #"(\d{1,2}):(\d{2}) ?(am|pm|AM|PM)?"#
+	let hhmmPattern = #"(\d{1,2})[:.](\d{2}) ?(am|pm|AM|PM)?"#
 	let hhPattern = #"(\d{1,2}) ?()(am|pm|AM|PM)"#  // empty capture group, so later code is the same
 	let patterns = [
 		try! Regex("^\(hhmmPattern) "),  // only if at start/end of input
