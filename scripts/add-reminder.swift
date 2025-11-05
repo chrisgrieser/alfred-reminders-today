@@ -8,18 +8,20 @@ let semaphore = DispatchSemaphore(value: 0)
 
 let input = CommandLine.arguments[1].trimmingCharacters(in: .whitespacesAndNewlines)
 let reminderList = ProcessInfo.processInfo.environment["reminder_list"]!
+let targetDay = ProcessInfo.processInfo.environment["target_day"]!
 
 // ─────────────────────────────────────────────────────────────────────────────
 
 struct ParsedResult {
 	let hour: Int?
 	let minute: Int?
-	let message: String
+	let msg: String
 	let bangs: String  // string with the number of exclamation marks
 	let amPm: String
+	let errorMsg: String?
 }
 
-func parseTimeAndPriorityAndMessage(from input: String) -> ParsedResult? {
+func parseTimeAndPriorityAndMessage(input: String, remForToday: Bool) -> ParsedResult {
 	var msg = input
 
 	// parse bangs for priority
@@ -33,43 +35,66 @@ func parseTimeAndPriorityAndMessage(from input: String) -> ParsedResult? {
 	var hour: Int?
 	var minute: Int?
 	var amPm = ""
+	var errorMsg: String?
 
 	// parse due time
 	let hhmmPattern = #"(\d{1,2})[:.](\d{2}) ?(am|pm|AM|PM)?"#
 	let hhPattern = #"(\d{1,2}) ?()(am|pm|AM|PM)"#  // empty capture group, so later code is the same
+	let relativePattern = #"in (\d+) ?(minutes?|hours?|min|m|h)"#
 	let patterns = [
 		try! Regex("^\(hhmmPattern) "),  // only if at start/end of input
 		try! Regex("^\(hhPattern) "),
+		try! Regex("^\(relativePattern) "),
 		try! Regex(" \(hhmmPattern)$"),
 		try! Regex(" \(hhPattern)$"),
+		try! Regex(" \(relativePattern)$"),
 	]
 	let match = patterns.compactMap { try? $0.firstMatch(in: msg) }.first
 
 	if match != nil {
-		let hourStr = match!.output[1].substring!
-		var minuteStr = match!.output[2].substring!
-		if minuteStr.isEmpty { minuteStr = "00" }  // empty capture group in `hhPattern`
-		let amPmStr = match!.output[3].substring
-		let hasAmPm = amPmStr != nil
+		let c = match!.output.map { $0.substring }
+		let timeString = c[0]!.trimmingCharacters(in: .whitespacesAndNewlines)
+		let isRelativeTime = timeString.starts(with: "in ")
 
-		if let hourVal = Int(hourStr),
-			let minuteVal = Int(minuteStr),
-			(0..<60).contains(minuteVal),
-			(!hasAmPm && (0..<24).contains(hourVal)) || (hasAmPm && (1..<13).contains(hourVal))
-		{
-			hour = hourVal
-			amPm = (amPmStr ?? "").lowercased()
-			if amPm == "pm" && hour != 12 { hour! += 12 }
-			if amPm == "am" && hour == 12 { hour = 0 }
-			minute = minuteVal
-			msg.removeSubrange(match!.range)
-		} else {
-			return nil  // invalid time
+		if isRelativeTime && !remForToday {
+			errorMsg = "Relative times are only supported for reminders for today."
 		}
+
+		if isRelativeTime {
+			var inXmins = Int(c[1]!)!
+			let unit = c[2]!.starts(with: "m") ? "minutes" : "hours"
+			if unit == "hours" { inXmins *= 60 }
+
+			let now = Date()
+			let future = Calendar.current.date(byAdding: .minute, value: inXmins, to: now)!
+			let target = Calendar.current.dateComponents([.day, .hour, .minute], from: future)
+			let today = Calendar.current.dateComponents([.day], from: now).day
+			if target.day != today {
+				errorMsg = "Can't set a relative time that goes beyond today."
+			}
+			hour = target.hour
+			minute = target.minute
+			amPm = ""
+		} else {
+			hour = Int(c[1]!)
+			minute = c[2]!.isEmpty ? 0 : Int(c[2]!)  // empty capture group in `hhPattern`
+			amPm = (c[3] ?? "").lowercased()
+		}
+		let hasAmPm = !amPm.isEmpty
+
+		if hour == nil || minute == nil || !(0..<60).contains(minute!)
+			|| (!hasAmPm && !(0..<24).contains(hour!)) || (hasAmPm && !(1..<13).contains(hour!))
+		{
+			errorMsg = "Invalid time: \"\(timeString)\""
+		}
+		if amPm == "pm" && hour != 12 { hour! += 12 }
+		if amPm == "am" && hour == 12 { hour = 0 }
+		msg.removeSubrange(match!.range)
 	}
 
 	msg = msg.trimmingCharacters(in: .whitespacesAndNewlines)
-	return ParsedResult(hour: hour, minute: minute, message: msg, bangs: bangs, amPm: amPm)
+	return ParsedResult(
+		hour: hour, minute: minute, msg: msg, bangs: bangs, amPm: amPm, errorMsg: errorMsg)
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -91,14 +116,15 @@ eventStore.requestFullAccessToReminders { granted, error in
 	}
 
 	// PARSE INPUT
-	let parsed = parseTimeAndPriorityAndMessage(from: input)
-	guard parsed != nil else {
-		print("❌ Invalid time: \"\(input)\"")
+	let remForToday = targetDay == "0"
+	let parsed = parseTimeAndPriorityAndMessage(input: input, remForToday: remForToday)
+	if let error = parsed.errorMsg {
+		print("❌ " + error)
 		semaphore.signal()
 		return
 	}
 	let (title, hh, mm, bangs, amPm) = (
-		parsed!.message, parsed!.hour, parsed!.minute, parsed!.bangs, parsed!.amPm
+		parsed.msg, parsed.hour, parsed.minute, parsed.bangs, parsed.amPm
 	)
 
 	// CREATE REMINDER
@@ -118,12 +144,10 @@ eventStore.requestFullAccessToReminders { granted, error in
 	// DETERMINE DAY WHEN TO ADD
 	let calendar = Calendar.current
 	let today = Date()
-	let targetDay = ProcessInfo.processInfo.environment["target_day"]!
-	let dateOffset = Int(targetDay)
 	var dayToUse: Date
 
-	if dateOffset != nil {
-		dayToUse = calendar.date(byAdding: .day, value: dateOffset!, to: today)!
+	if let dateOffset = Int(targetDay) {
+		dayToUse = calendar.date(byAdding: .day, value: dateOffset, to: today)!
 	} else {
 		let weekdayName: String = targetDay
 		let weekdays: [String: Int] = [
