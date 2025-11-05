@@ -842,7 +842,7 @@
 				<key>fontsizing</key>
 				<integer>0</integer>
 				<key>footertext</key>
-				<string>First line: title, remaining lines: notes     ·     ⌥⏎: Save     ·     ⎋: Cancel</string>
+				<string>1st line: title, remaining lines: notes     ·     ⌥⏎: Save     ·     ⎋: Cancel</string>
 				<key>inputfile</key>
 				<string></string>
 				<key>inputtype</key>

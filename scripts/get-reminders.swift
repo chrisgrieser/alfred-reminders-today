@@ -1,6 +1,16 @@
 #!/usr/bin/env swift
 import EventKit
 
+let eventStore = EKEventStore()
+let semaphore = DispatchSemaphore(value: 0)
+
+// Alfred environment variables
+let reminderList = ProcessInfo.processInfo.environment["reminder_list"]!
+let includeAllListsEnabled = ProcessInfo.processInfo.environment["include_all_lists"]! == "1"
+let showCompleted = ProcessInfo.processInfo.environment["showCompleted"] == "true"  // no `!`, since not always set
+let includeNoDueDateEnabled = ProcessInfo.processInfo.environment["include_no_duedate"]! == "1"
+// ─────────────────────────────────────────────────────────────────────────────
+
 struct ReminderOutput: Codable {
 	// CAVEAT Reminders.app itself does not store URLs in the `url` field, so
 	// retrieving that is pointless
@@ -15,16 +25,6 @@ struct ReminderOutput: Codable {
 	let hasRecurrenceRules: Bool
 	let priority: Int
 }
-
-let eventStore = EKEventStore()
-let semaphore = DispatchSemaphore(value: 0)
-
-// Alfred environment variables
-let reminderList = ProcessInfo.processInfo.environment["reminder_list"]!
-let includeAllListsEnabled = ProcessInfo.processInfo.environment["include_all_lists"]! == "1"
-let showCompleted = ProcessInfo.processInfo.environment["showCompleted"] == "true"  // no `!`, since not always set
-let includeNoDueDateEnabled = ProcessInfo.processInfo.environment["include_no_duedate"]! == "1"
-// ─────────────────────────────────────────────────────────────────────────────
 
 var colorMap: [String: String] = [:]
 func mapCGColorToEmoji(_ cgColor: CGColor) -> String {
@@ -82,13 +82,17 @@ func normalizePriority(_ rem: EKReminder) -> Int {
 // ─────────────────────────────────────────────────────────────────────────────
 
 eventStore.requestFullAccessToReminders { granted, error in
-	guard error == nil && granted else {
-		let msg =
-			error != nil
-			? "Error requesting access: \(error!.localizedDescription)"
-			: "Access to Reminder.app not granted."
+	func fail(_ msg: String) {
 		print("❌ " + msg)
 		semaphore.signal()
+	}
+
+	guard error == nil else {
+		fail("Error requesting access: " + error!.localizedDescription)
+		return
+	}
+	guard granted else {
+		fail("Access to Reminder.app not granted.")
 		return
 	}
 	// ──────────────────────────────────────────────────────────────────────────
@@ -101,8 +105,7 @@ eventStore.requestFullAccessToReminders { granted, error in
 	} else if let target = calendars.first(where: { $0.title == reminderList }) {
 		selectedCalendars = [target]
 	} else {
-		print("⚠️ No list found with name \"\(reminderList)\"")
-		semaphore.signal()
+		fail("⚠️ No list found with name \"\(reminderList)\"")
 		return
 	}
 
@@ -135,7 +138,7 @@ eventStore.requestFullAccessToReminders { granted, error in
 		let reminderData =
 			reminders
 			.filter { rem in
-				// 1. not completed & due before tomorrow 
+				// 1. not completed & due before tomorrow
 				// or 2. completed & due today (filtered above via predicate)
 				// or 3. no due date & not completed (if user enabled showing no due date reminders)
 				let dueDate = rem.dueDateComponents?.date
@@ -185,8 +188,9 @@ eventStore.requestFullAccessToReminders { granted, error in
 				print(jsonString)
 			}
 		} catch {
-			print("❌ Failed to encode reminders as JSON: \(error.localizedDescription)")
+			fail("Failed to encode reminders as JSON: " + error.localizedDescription)
 		}
+
 		semaphore.signal()
 	}
 

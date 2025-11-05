@@ -4,10 +4,10 @@ import EventKit
 let eventStore = EKEventStore()
 let semaphore = DispatchSemaphore(value: 0)
 
+// Alfred environment variables
 let input = CommandLine.arguments[1].trimmingCharacters(in: .whitespacesAndNewlines)
 let reminderList = ProcessInfo.processInfo.environment["reminder_list"]!
 let targetDay = ProcessInfo.processInfo.environment["target_day"]!
-
 // ─────────────────────────────────────────────────────────────────────────────
 
 struct ParsedResult {
@@ -78,8 +78,8 @@ func parseTimeAndPriorityAndMessage(input: String, remForToday: Bool) -> ParsedR
 			minute = capture[2]!.isEmpty ? 0 : Int(capture[2]!)  // empty capture group in `hhPattern`
 			amPm = (capture[3] ?? "").lowercased()
 		}
-		let hasAmPm = !amPm.isEmpty
 
+		let hasAmPm = !amPm.isEmpty
 		if !(0..<60).contains(minute!)
 			|| (!hasAmPm && !(0..<24).contains(hour!)) || (hasAmPm && !(1..<13).contains(hour!))
 		{
@@ -116,6 +116,8 @@ eventStore.requestFullAccessToReminders { granted, error in
 		fail("Input is empty.")
 		return
 	}
+	// ──────────────────────────────────────────────────────────────────────────
+
 
 	// PARSE INPUT
 	let remForToday = targetDay == "0"
