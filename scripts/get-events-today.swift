@@ -1,7 +1,5 @@
 #!/usr/bin/env swift
-
 import EventKit
-import Foundation
 
 struct EventOutput: Codable {
 	let title: String

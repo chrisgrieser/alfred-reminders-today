@@ -1,7 +1,5 @@
 #!/usr/bin/env swift
 import EventKit
-import Foundation
-import WidgetKit
 
 let eventStore = EKEventStore()
 let semaphore = DispatchSemaphore(value: 0)

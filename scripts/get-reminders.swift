@@ -1,7 +1,5 @@
 #!/usr/bin/env swift
-
 import EventKit
-import Foundation
 
 struct ReminderOutput: Codable {
 	// CAVEAT Reminders.app itself does not store URLs in the `url` field, so
