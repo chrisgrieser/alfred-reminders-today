@@ -13,12 +13,12 @@ let targetDay = ProcessInfo.processInfo.environment["target_day"]!
 // ─────────────────────────────────────────────────────────────────────────────
 
 struct ParsedResult {
-	let hour: Int?
+	let hour: Int?  // nil if no time (= all-day reminder)
 	let minute: Int?
 	let msg: String
 	let bangs: String  // string with the number of exclamation marks
 	let amPm: String
-	let errorMsg: String?
+	let errorMsg: String?  // non-nil if error
 }
 
 func parseTimeAndPriorityAndMessage(input: String, remForToday: Bool) -> ParsedResult {
@@ -39,10 +39,10 @@ func parseTimeAndPriorityAndMessage(input: String, remForToday: Bool) -> ParsedR
 
 	// parse due time
 	let hhmmPattern = #"(\d{1,2})[:.](\d{2}) ?(am|pm|AM|PM)?"#
-	let hhPattern = #"(\d{1,2}) ?()(am|pm|AM|PM)"#  // empty capture group, so later code is the same
+	let hhPattern = #"(\d{1,2}) ?()(am|pm|AM|PM)"#  // empty capture group so index is consistent
 	let relativePattern = #"in (\d+) ?(minutes?|hours?|min|m|h)"#
-	let patterns = [
-		try! Regex("^\(hhmmPattern) "),  // only if at start/end of input
+	let patterns = [  // only if at start/end of input
+		try! Regex("^\(hhmmPattern) "),
 		try! Regex("^\(hhPattern) "),
 		try! Regex("^\(relativePattern) "),
 		try! Regex(" \(hhmmPattern)$"),
@@ -52,8 +52,8 @@ func parseTimeAndPriorityAndMessage(input: String, remForToday: Bool) -> ParsedR
 	let match = patterns.compactMap { try? $0.firstMatch(in: msg) }.first
 
 	if match != nil {
-		let c = match!.output.map { $0.substring }
-		let timeString = c[0]!.trimmingCharacters(in: .whitespacesAndNewlines)
+		let capture = match!.output.map { $0.substring }
+		let timeString = capture[0]!.trimmingCharacters(in: .whitespacesAndNewlines)
 		let isRelativeTime = timeString.starts(with: "in ")
 
 		if isRelativeTime && !remForToday {
@@ -61,8 +61,8 @@ func parseTimeAndPriorityAndMessage(input: String, remForToday: Bool) -> ParsedR
 		}
 
 		if isRelativeTime {
-			var inXmins = Int(c[1]!)!
-			let unit = c[2]!.starts(with: "m") ? "minutes" : "hours"
+			var inXmins = Int(capture[1]!)!
+			let unit = capture[2]!.starts(with: "m") ? "minutes" : "hours"
 			if unit == "hours" { inXmins *= 60 }
 
 			let now = Date()
@@ -76,23 +76,24 @@ func parseTimeAndPriorityAndMessage(input: String, remForToday: Bool) -> ParsedR
 			minute = target.minute
 			amPm = ""
 		} else {
-			hour = Int(c[1]!)
-			minute = c[2]!.isEmpty ? 0 : Int(c[2]!)  // empty capture group in `hhPattern`
-			amPm = (c[3] ?? "").lowercased()
+			hour = Int(capture[1]!)
+			minute = capture[2]!.isEmpty ? 0 : Int(capture[2]!)  // empty capture group in `hhPattern`
+			amPm = (capture[3] ?? "").lowercased()
 		}
 		let hasAmPm = !amPm.isEmpty
 
-		if hour == nil || minute == nil || !(0..<60).contains(minute!)
+		if !(0..<60).contains(minute!)
 			|| (!hasAmPm && !(0..<24).contains(hour!)) || (hasAmPm && !(1..<13).contains(hour!))
 		{
 			errorMsg = "Invalid time: \"\(timeString)\""
 		}
 		if amPm == "pm" && hour != 12 { hour! += 12 }
 		if amPm == "am" && hour == 12 { hour = 0 }
+
 		msg.removeSubrange(match!.range)
+		msg = msg.trimmingCharacters(in: .whitespacesAndNewlines)
 	}
 
-	msg = msg.trimmingCharacters(in: .whitespacesAndNewlines)
 	return ParsedResult(
 		hour: hour, minute: minute, msg: msg, bangs: bangs, amPm: amPm, errorMsg: errorMsg)
 }
@@ -190,12 +191,11 @@ eventStore.requestFullAccessToReminders { granted, error in
 
 	// SET LIST (= CALENDAR)
 	let listToUse = eventStore.calendars(for: .reminder).first(where: { $0.title == reminderList })
-	if listToUse != nil {
-		reminder.calendar = listToUse
-	} else {
-		fail("No calendar found with the name \"\(reminderList)\".")
+	guard listToUse != nil else {
+		fail("No reminder list found with the name \"\(reminderList)\".")
 		return
 	}
+	reminder.calendar = listToUse
 
 	// SAVE
 	do {
@@ -206,9 +206,9 @@ eventStore.requestFullAccessToReminders { granted, error in
 	}
 
 	// NOTIFICATION FOR ALFRED
-	var msg: [String] = []
+	var notif: [String] = []
 	if !bangs.isEmpty {
-		msg.append(bangs)
+		notif.append(bangs)
 	}
 	if !isAllDayReminder {
 		let minutesPadded = String(format: "%02d", mm!)
@@ -216,10 +216,10 @@ eventStore.requestFullAccessToReminders { granted, error in
 		if amPm == "am" && hh! == 0 { hourDisplay = 12 }
 		if amPm == "pm" && hh! != 12 { hourDisplay = hh! - 12 }
 		let timeStr = String(hourDisplay) + ":" + minutesPadded + amPm
-		msg.append(timeStr)
+		notif.append(timeStr)
 	}
-	msg.append("\"\(title)\"")
-	let alfredNotif = msg.joined(separator: "     ")
+	notif.append("\"\(title)\"")
+	let alfredNotif = notif.joined(separator: "    ")
 	print(alfredNotif)
 
 	semaphore.signal()
