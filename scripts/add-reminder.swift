@@ -102,7 +102,7 @@ func parseTimeAndPriorityAndMessage(input: String, remForToday: Bool) -> ParsedR
 
 eventStore.requestFullAccessToReminders { granted, error in
 	func fail(_ msg: String) {
-		print("❌ " + msg)
+		print("❌;" + msg) // `;` used as separator in Alfred
 		semaphore.signal()
 	}
 
@@ -220,7 +220,7 @@ eventStore.requestFullAccessToReminders { granted, error in
 	}
 	notif.append("\"\(title)\"")
 	let alfredNotif = notif.joined(separator: "    ")
-	print(alfredNotif)
+	print("✅;" + alfredNotif)  // `;` used as separator in Alfred
 
 	semaphore.signal()
 }
