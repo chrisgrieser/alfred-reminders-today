@@ -1309,6 +1309,8 @@
 	  medium, `!!!` = high).
 	+ Use `q1` create the reminder tomorrow, `q2` for the day after tomorrow,
 	  and `qm` for next Monday. All keywords are configurable.
+	+ If the input is a bare URL, will move the URL to the reminder body and
+	  fetch the reminder title from the URL.
 	+ Configure the
 	  [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/) to
 	  create a reminder due today from the current selection.
