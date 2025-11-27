@@ -7,6 +7,19 @@ Display and add reminders due today.
 
 <img alt="Showcase" width=70% src="https://github.com/user-attachments/assets/627ef6de-8fe9-4710-8352-2c63e4be5e67">
 
+## Table of contents
+
+<!-- toc -->
+
+- [Usage](#usage)
+- [Installation](#installation)
+- [Troubleshooting](#troubleshooting)
+- [Limitations](#limitations)
+- [iOS Shortcut for creating new task](#ios-shortcut-for-creating-new-task)
+- [About the developer](#about-the-developer)
+
+<!-- tocstop -->
+
 ## Usage
 - Display reminders due today (or overdue) via the keyword `rem`. Configure the
   [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/) for faster
@@ -51,12 +64,20 @@ Display and add reminders due today.
 ## Installation
 **Requirements**
 - macOS 15 (Sequoia) or higher
-- Xcode command line tools. (Alfred [automatically prompts you to install
-  them](https://www.alfredapp.com/help/kb/dependencies/), if they are not
-  available on your device.)
 
 [➡️ Download the latest release of this
 workflow.](https://github.com/chrisgrieser/alfred-reminders-today/releases/latest)
+
+## Troubleshooting
+- Xcode command line tools are required. Alfred [automatically prompts you to
+  install them](https://www.alfredapp.com/help/kb/dependencies/), if they are
+  not available on your device, but in case there are problems with that, you
+  can install them manually via `xcode-select --install` in the terminal.
+- Alfred will automatically request access to you reminders. If there are issues
+  with that, for instance if you manually removed access, you can re-grant
+  access via `System Settings > Security & Privacy > Reminders`. (If you are
+  including events, you need to enable access to the calendar as well.)
+- The workflow requires at least macOS 15 (Sequoia) or higher.
 
 ## Limitations
 Apple's `EventKit` API does not offer access to various Reminder metadata, which
