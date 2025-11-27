@@ -1,6 +1,9 @@
 # vim: ft=gitignore
 #───────────────────────────────────────────────────────────────────────────────
 
+# for Shortcuts.app
+*.shortcut
+
 # git
 .git/
 .gitignore

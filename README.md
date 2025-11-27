@@ -65,6 +65,11 @@ is why this workflow cannot support the following features:
 - The macOS Reminders widget shown at the notification center or desktop do not
   update when reminders are added or changed via this workflow.
 
+## iOS Shortcut for creating new task
+You can use this shortcut to create a new task for today due today. Use it in
+the Share Sheet or simply run it from the Lock Screen or Control Center.
+[➡️ Download the shortcut](https://raw.githubusercontent.com/chrisgrieser/alfred-reminders-today/blob/main/Task%20for%20today.shortcut)
+
 ## About the developer
 In my day job, I am a sociologist studying the social mechanisms underlying the
 digital economy. For my PhD project, I investigate the governance of the app
