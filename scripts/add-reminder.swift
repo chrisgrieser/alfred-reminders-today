@@ -101,7 +101,7 @@ func parseTimeAndPriorityAndMessage(input: String, remForToday: Bool) -> ParsedR
 func fetchWebsiteTitle(from string: String) async throws -> String? {
 	guard
 		let url = URL(string: string),
-		url.scheme != nil && url.host != nil
+		(url.scheme == "http" || url.scheme == "https") && url.host != nil
 	else { return nil }
 
 	let (data, _) = try await URLSession.shared.data(from: url)
