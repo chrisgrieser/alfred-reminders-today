@@ -21,7 +21,7 @@ struct ParsedResult {
 	let errorMsg: String?  // non-nil if error
 }
 
-func parseTimeAndPriorityAndMessage(input: String, remForToday: Bool) -> ParsedResult {
+func parseTimeAndPriorityAndMessage(input: String, targetDay: String) -> ParsedResult {
 	var msg = input
 
 	// parse bangs for priority
@@ -56,11 +56,10 @@ func parseTimeAndPriorityAndMessage(input: String, remForToday: Bool) -> ParsedR
 		let timeString = capture[0]!.trimmingCharacters(in: .whitespacesAndNewlines)
 		let isRelativeTime = timeString.starts(with: "in ")
 
-		if isRelativeTime && !remForToday {
-			errorMsg = "Relative times are only supported for reminders for today."
-		}
-
 		if isRelativeTime {
+			if targetDay != "today" {
+				errorMsg = "Relative times are only supported for reminders for today."
+			}
 			var inXmins = Int(capture[1]!)!
 			let unit = capture[2]!.starts(with: "m") ? "minutes" : "hours"
 			if unit == "hours" { inXmins *= 60 }
@@ -141,8 +140,7 @@ Task {  // wrapping in `Task` because `await` is not allowed in `main`
 	// ──────────────────────────────────────────────────────────────────────────
 
 	// PARSE INPUT
-	let remForToday = targetDay == "0"
-	let parsed = parseTimeAndPriorityAndMessage(input: input, remForToday: remForToday)
+	let parsed = parseTimeAndPriorityAndMessage(input: input, targetDay: targetDay)
 	guard parsed.errorMsg == nil else {
 		fail(parsed.errorMsg!)
 		return
@@ -183,12 +181,16 @@ Task {  // wrapping in `Task` because `await` is not allowed in `main`
 	} else if let dateOffset = Int(targetDay) {
 		dayToUse = calendar.date(byAdding: .day, value: dateOffset, to: today)!
 	} else {
-		let weekdayName: String = targetDay
+		let weekdayName: String = targetDay.lowercased()
 		let weekdays: [String: Int] = [
 			"sunday": 1, "monday": 2, "tuesday": 3, "wednesday": 4, "thursday": 5, "friday": 6,
 			"saturday": 7,
 		]
-		let weekday = weekdays[weekdayName.lowercased()]
+		let weekday = weekdays[weekdayName]
+		guard weekday != nil else {
+			fail("Unknown value for target day: " + targetDay)
+			return
+		}
 		dayToUse = calendar.nextDate(
 			after: today,
 			matching: DateComponents(weekday: weekday),
