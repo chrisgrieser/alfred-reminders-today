@@ -53,8 +53,11 @@ Display and add reminders due today.
 	  start of end. For example, `buy milk!!` or `!!buy milk` will result in a
 	  reminder title `buy milk` with a medium priority (`!` = low, `!!` =
 	  medium, `!!!` = high).
-	+ Use `q1` create the reminder tomorrow, `q2` for the day after tomorrow,
-	  and `qm` for next Monday. All keywords are configurable.
+	+ You can use alternative keywords for different due dates of new reminders:
+		* `qn`: no due date
+		* `q1` tomorrow
+		* `q2` in two days
+		* `qm` next Monday
 	+ If the input is a bare URL, will move the URL to the reminder body and
 	  fetch the reminder title from the URL.
 	+ Configure the
