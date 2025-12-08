@@ -51,14 +51,18 @@ func parseTimeAndPriorityAndMessage(input: String, targetDay: String) -> ParsedR
 	]
 	let match = patterns.compactMap { try? $0.firstMatch(in: msg) }.first
 
+	if match != nil && targetDay == "none" {
+		errorMsg = "Cannot set a due time for a reminder without a target day."
+	}
+
 	if match != nil {
 		let capture = match!.output.map { $0.substring }
 		let timeString = capture[0]!.trimmingCharacters(in: .whitespacesAndNewlines)
 		let isRelativeTime = timeString.starts(with: "in ")
 
 		if isRelativeTime {
-			if targetDay != "today" {
-				errorMsg = "Relative times are only supported for reminders for today."
+			if targetDay != "0" {
+				errorMsg = "Relative times are only supported for today."
 			}
 			var inXmins = Int(capture[1]!)!
 			let unit = capture[2]!.starts(with: "m") ? "minutes" : "hours"
