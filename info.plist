@@ -73,11 +73,37 @@
 				<false/>
 			</dict>
 		</array>
+		<key>2A1B3C4D-5E6F-7A8B-9C0D-1E2F3A4B5C6D</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>3B2C4D5E-6F7A-8B9C-0D1E-2F3A4B5C6D7E</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 		<key>25035183-7626-4D8F-8867-FC3ABE671A7A</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
 				<string>E8775363-A902-4EEF-9CC7-B54FF4798A6D</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>3B2C4D5E-6F7A-8B9C-0D1E-2F3A4B5C6D7E</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>0F93036F-D158-49BB-97AF-DE600B8A3300</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -1265,6 +1291,49 @@
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>{var:quickadd_nodate_keyword}</string>
+				<key>subtext</key>
+				<string>no due date</string>
+				<key>text</key>
+				<string>⚪ Add to {var:reminder_list}: {query}</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>2A1B3C4D-5E6F-7A8B-9C0D-1E2F3A4B5C6D</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argument</key>
+				<string>{query}</string>
+				<key>passthroughargument</key>
+				<true/>
+				<key>variables</key>
+				<dict>
+					<key>notification_label</key>
+					<string>no due date</string>
+					<key>target_day</key>
+					<string>none</string>
+				</dict>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.utility.argument</string>
+			<key>uid</key>
+			<string>3B2C4D5E-6F7A-8B9C-0D1E-2F3A4B5C6D7E</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string>## Requirements
@@ -1385,6 +1454,26 @@ for details how to fix common problems.
 			<real>30</real>
 			<key>ypos</key>
 			<real>1010</real>
+		</dict>
+		<key>2A1B3C4D-5E6F-7A8B-9C0D-1E2F3A4B5C6D</key>
+		<dict>
+			<key>colorindex</key>
+			<integer>2</integer>
+			<key>note</key>
+			<string>no due date</string>
+			<key>xpos</key>
+			<real>30</real>
+			<key>ypos</key>
+			<real>1140</real>
+		</dict>
+		<key>3B2C4D5E-6F7A-8B9C-0D1E-2F3A4B5C6D7E</key>
+		<dict>
+			<key>colorindex</key>
+			<integer>2</integer>
+			<key>xpos</key>
+			<real>180</real>
+			<key>ypos</key>
+			<real>1170</real>
 		</dict>
 		<key>32A761BD-C231-44E7-88CB-7590C87A6BA6</key>
 		<dict>
@@ -1841,6 +1930,27 @@ to set a hotkey to show reminders due today</string>
 			<string>textfield</string>
 			<key>variable</key>
 			<string>quickadd_nextMonday_keyword</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>q0</string>
+				<key>placeholder</key>
+				<string>q0</string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>keyword to quick-add with no due date</string>
+			<key>label</key>
+			<string></string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>quickadd_nodate_keyword</string>
 		</dict>
 		<dict>
 			<key>config</key>
