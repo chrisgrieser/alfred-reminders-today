@@ -18,30 +18,32 @@ struct ParsedResult {
 	let msg: String
 	let bangs: String  // string with the number of exclamation marks
 	let amPm: String
-	let errorMsg: String?  // non-nil if error
+	let error: String?  // non-nil if error
 }
 
 func parseTimeAndPriorityAndMessage(input: String, targetDay: String) -> ParsedResult {
+	func parseError(_ msg: String) -> ParsedResult {
+		return ParsedResult(hour: nil, minute: nil, msg: "", bangs: "", amPm: "", error: msg)
+	}
+
 	var msg = input
+	var hour: Int?
+	var minute: Int?
+	var amPm = ""
 
 	// parse bangs for priority
 	var bangs = ""  // default: no priority
 	let bangRegex = try! Regex("^!{1,3}|!{1,3}$")
-	if let match = try? bangRegex.firstMatch(in: msg) {
-		bangs = String(msg[match.range])
-		msg.removeSubrange(match.range)
+	if let bangMatch = try? bangRegex.firstMatch(in: msg) {
+		bangs = String(msg[bangMatch.range])
+		msg.removeSubrange(bangMatch.range)
 	}
-
-	var hour: Int?
-	var minute: Int?
-	var amPm = ""
-	var errorMsg: String?
 
 	// parse due time
 	let hhmmPattern = #"(\d{1,2})[:.](\d{2}) ?(am|pm|AM|PM)?"#
 	let hhPattern = #"(\d{1,2}) ?()(am|pm|AM|PM)"#  // empty capture group so index is consistent
 	let relativePattern = #"in (\d+) ?(minutes?|hours?|min|m|h)"#
-	let patterns = [  // only if at start/end of input
+	let patterns = [  // only match pattern if it is at start or end of input
 		try! Regex("^\(hhmmPattern) "),
 		try! Regex("^\(hhPattern) "),
 		try! Regex("^\(relativePattern) "),
@@ -49,20 +51,19 @@ func parseTimeAndPriorityAndMessage(input: String, targetDay: String) -> ParsedR
 		try! Regex(" \(hhPattern)$"),
 		try! Regex(" \(relativePattern)$"),
 	]
-	let match = patterns.compactMap { try? $0.firstMatch(in: msg) }.first
-
-	if match != nil && targetDay == "none" {
-		errorMsg = "Cannot set a due time for a reminder without a target day."
+	let timeMatch = patterns.compactMap { try? $0.firstMatch(in: msg) }.first
+	if timeMatch != nil && targetDay == "none" {
+		return parseError("Cannot set a due time for a reminder without due date.")
 	}
 
-	if match != nil {
-		let capture = match!.output.map { $0.substring }
+	if let timeMatch {
+		let capture = timeMatch.output.map { $0.substring }
 		let timeString = capture[0]!.trimmingCharacters(in: .whitespacesAndNewlines)
 		let isRelativeTime = timeString.starts(with: "in ")
 
 		if isRelativeTime {
-			if targetDay != "0" {
-				errorMsg = "Relative times are only supported for today."
+			guard targetDay == "0" else {
+				return parseError("Relative times are only supported for today.")
 			}
 			var inXmins = Int(capture[1]!)!
 			let unit = capture[2]!.starts(with: "m") ? "minutes" : "hours"
@@ -72,8 +73,8 @@ func parseTimeAndPriorityAndMessage(input: String, targetDay: String) -> ParsedR
 			let dueTime = Calendar.current.date(byAdding: .minute, value: inXmins, to: now)!
 			let dueTimeComps = Calendar.current.dateComponents([.day, .hour, .minute], from: dueTime)
 			let today = Calendar.current.dateComponents([.day], from: now).day
-			if dueTimeComps.day != today {
-				errorMsg = "Can't set a relative time that goes beyond today."
+			guard dueTimeComps.day == today else {
+				return parseError("Can't set a relative time that goes beyond today.")
 			}
 			hour = dueTimeComps.hour
 			minute = dueTimeComps.minute
@@ -85,20 +86,18 @@ func parseTimeAndPriorityAndMessage(input: String, targetDay: String) -> ParsedR
 		}
 
 		let hasAmPm = !amPm.isEmpty
-		if !(0..<60).contains(minute!)
-			|| (!hasAmPm && !(0..<24).contains(hour!)) || (hasAmPm && !(1..<13).contains(hour!))
-		{
-			errorMsg = "Invalid time: \"\(timeString)\""
-		}
+		guard
+			(0..<60).contains(minute!)
+				&& ((!hasAmPm && (0..<24).contains(hour!)) || (hasAmPm && (1..<13).contains(hour!)))
+		else { return parseError("Invalid time: \"\(timeString)\"") }
 		if amPm == "pm" && hour != 12 { hour! += 12 }
 		if amPm == "am" && hour == 12 { hour = 0 }
 
-		msg.removeSubrange(match!.range)
+		msg.removeSubrange(timeMatch.range)
 		msg = msg.trimmingCharacters(in: .whitespacesAndNewlines)
 	}
 
-	return ParsedResult(
-		hour: hour, minute: minute, msg: msg, bangs: bangs, amPm: amPm, errorMsg: errorMsg)
+	return ParsedResult(hour: hour, minute: minute, msg: msg, bangs: bangs, amPm: amPm, error: nil)
 }
 
 func fetchWebsiteTitle(from string: String) async throws -> String? {
@@ -145,8 +144,8 @@ Task {  // wrapping in `Task` because `await` is not allowed in `main`
 
 	// PARSE INPUT
 	let parsed = parseTimeAndPriorityAndMessage(input: input, targetDay: targetDay)
-	guard parsed.errorMsg == nil else {
-		fail(parsed.errorMsg!)
+	if let errorMsg = parsed.error {
+		fail(errorMsg)
 		return
 	}
 	let (hh, mm, bangs, amPm) = (parsed.hour, parsed.minute, parsed.bangs, parsed.amPm)
@@ -190,8 +189,7 @@ Task {  // wrapping in `Task` because `await` is not allowed in `main`
 			"sunday": 1, "monday": 2, "tuesday": 3, "wednesday": 4, "thursday": 5, "friday": 6,
 			"saturday": 7,
 		]
-		let weekday = weekdays[weekdayName]
-		guard weekday != nil else {
+		guard let weekday = weekdays[weekdayName] else {
 			fail("Unknown value for target day: " + targetDay)
 			return
 		}
@@ -203,8 +201,8 @@ Task {  // wrapping in `Task` because `await` is not allowed in `main`
 	}
 
 	// SET DUE DATE
-	if dayToUse != nil {
-		var dateComponents = calendar.dateComponents([.year, .month, .day], from: dayToUse!)
+	if let dayToUse {
+		var dateComponents = calendar.dateComponents([.year, .month, .day], from: dayToUse)
 		if !isAllDayReminder {
 			dateComponents.hour = hh
 			dateComponents.minute = mm
