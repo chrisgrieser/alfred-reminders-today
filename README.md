@@ -53,8 +53,9 @@ Display and add reminders due today.
 	  start of end. For example, `buy milk!!` or `!!buy milk` will result in a
 	  reminder title `buy milk` with a medium priority (`!` = low, `!!` =
 	  medium, `!!!` = high).
-	+ You can use alternative keywords for different due dates of new reminders:
-		* `qn`: no due date
+	+ You can use alternative keywords to create new reminders with other due
+	  dates:
+		* `qn` no due date
 		* `q1` tomorrow
 		* `q2` in two days
 		* `qm` next Monday
@@ -87,7 +88,7 @@ Apple's `EventKit` API does not offer access to various Reminder metadata, which
 is why this workflow cannot support the following features:
 - The `URL` field of a reminder is not accessible, so only URLs in the title or
   notes are supported.
-- A reminder's tags, attachments, and flag-status are not accessible.
+- A reminder's tags, attachments, and flag-status are also not available.
 - The macOS Reminders widget shown at the notification center or desktop do not
   update when reminders are added or changed via this workflow.
 
