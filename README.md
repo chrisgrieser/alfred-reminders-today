@@ -24,46 +24,46 @@ Display and add reminders due today.
 - Display reminders due today (or overdue) via the keyword `rem`. Configure the
   [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/) for faster
   triggering.
-	+ <kbd>⏎</kbd>: Complete the reminder.
-	+ <kbd>⌘⏎</kbd>: If the reminder has a URL in title or notes, open it in the
-	  default browser. Otherwise, copy the reminder's title & notes to the
-	  clipboard. Afterward, complete the reminder.
-	+ <kbd>⇧⏎</kbd>: "Snooze" the reminder by changing its due date to tomorrow.
-	+ <kbd>⌥⏎</kbd>: Edit the reminders title and body in Alfred's Text View.
-	  The first line is the reminder's title, the remaining lines the notes.
-	+ <kbd>⌃⏎</kbd>: Display completed reminders due today as well. Using
-	  <kbd>⏎</kbd> on a completed reminder marks it as uncompleted. The other
-	  modifiers work the same as with uncompleted reminders. Use <kbd>⌃⏎</kbd>
-	  once more to hide completed reminders again.
-	+ <kbd>⌘C</kbd>: Copy the reminder title & notes.
-	+ <kbd>⌘L</kbd>: Display the reminder details in Large Type.
-	+ <kbd>⌘Y</kbd>: Quick Look the URL, if there is one.
-	+ <kbd>⏎</kbd> *(on an event)*: If the location is a URL, open the URL.
-	  Otherwise, open Google Maps with the location.
+    - <kbd>⏎</kbd>: Complete the reminder.
+    - <kbd>⌘⏎</kbd>: If the reminder has a URL in title or notes, open it in the
+      default browser. Otherwise, copy the reminder's title & notes to the
+      clipboard. Afterward, complete the reminder.
+    - <kbd>⇧⏎</kbd>: "Snooze" the reminder by changing its due date to tomorrow.
+    - <kbd>⌥⏎</kbd>: Edit the reminders title and body in Alfred's Text View.
+      The first line is the reminder's title, the remaining lines the notes.
+    - <kbd>⌃⏎</kbd>: Display completed reminders due today as well. Using
+      <kbd>⏎</kbd> on a completed reminder marks it as uncompleted. The other
+      modifiers work the same as with uncompleted reminders. Use <kbd>⌃⏎</kbd>
+      once more to hide completed reminders again.
+    - <kbd>⌘C</kbd>: Copy the reminder title & notes.
+    - <kbd>⌘L</kbd>: Display the reminder details in Large Type.
+    - <kbd>⌘Y</kbd>: Quick Look the URL, if there is one.
+    - <kbd>⏎</kbd> *(on an event)*: If the location is a URL, open the URL.
+      Otherwise, open Google Maps with the location.
 - Quickly add a new reminder due today the keyword `qq`.
-	+ The command supports simple parsing of a due time with the format `hh:mm`
-	  or `hh.mm` at the start or end of the input.
-		* For instance, `19:00 buy milk` or `buy milk 19.00` will set the due
-		  time to `19:00` and the reminder title to `buy milk`.
-		* 12-hour time like `buy milk 3:00pm` or `buy milk 3pm` is also
-		  supported.
-		* Alternative, you can specify a relative time like `buy milk in 2h` or
-		  `in 2 minutes buy milk`.
-	+ A priority can be specified by adding the respective number of `!` at the
-	  start of end. For example, `buy milk!!` or `!!buy milk` will result in a
-	  reminder title `buy milk` with a medium priority (`!` = low, `!!` =
-	  medium, `!!!` = high).
-	+ You can use alternative keywords to create new reminders with other due
-	  dates:
-		* `qn` no due date
-		* `q1` tomorrow
-		* `q2` in two days
-		* `qm` next Monday
-	+ If the input is a bare URL, will move the URL to the reminder body and
-	  fetch the reminder title from the URL.
-	+ Configure the
-	  [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/) to
-	  create a reminder due today from the current selection.
+    - The command supports simple parsing of a due time with the format `hh:mm`
+      or `hh.mm` at the start or end of the input.
+        - For instance, `19:00 buy milk` or `buy milk 19.00` will set the due
+          time to `19:00` and the reminder title to `buy milk`.
+        - 12-hour time like `buy milk 3:00pm` or `buy milk 3pm` is also
+          supported.
+        - Alternative, you can specify a relative time like `buy milk in 2h` or
+          `in 2 minutes buy milk`.
+    - A priority can be specified by adding the respective number of `!` at the
+      start of end. For example, `buy milk!!` or `!!buy milk` will result in a
+      reminder title `buy milk` with a medium priority (`!` = low, `!!` =
+      medium, `!!!` = high).
+    - You can use alternative keywords to create new reminders with other due
+      dates:
+        - `qn` no due date
+        - `q1` tomorrow
+        - `q2` in two days
+        - `qm` next Monday
+    - If the input is a bare URL, will move the URL to the reminder body and
+      fetch the reminder title from the URL.
+    - Configure the
+      [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/) to
+      create a reminder due today from the current selection.
 
 ## Installation
 **Requirements**
