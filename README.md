@@ -66,8 +66,7 @@ Display and add reminders due today.
       create a reminder due today from the current selection.
 
 ## Installation
-**Requirements**
-- macOS 15 (Sequoia) or higher
+**Requirement:** macOS 15 (Sequoia) or higher
 
 [➡️ Download the latest release of this
 workflow.](https://github.com/chrisgrieser/alfred-reminders-today/releases/latest)
