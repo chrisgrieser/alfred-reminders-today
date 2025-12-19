@@ -1,4 +1,4 @@
-# Alfred: Reminders Today
+# Alfred Reminders today <!-- rumdl-disable-line MD063 -->
 ![GitHub downloads](https://img.shields.io/github/downloads/chrisgrieser/alfred-reminders-today/total?label=GitHub%20Downloads&style=plastic&logo=github)
 ![Alfred Gallery downloads](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fchrisgrieser%2F.config%2Frefs%2Fheads%2Fmain%2FAlfred.alfredpreferences%2Falfred-gallery-downloads.yaml&query=reminders-today&style=plastic&logo=alfred&label=Gallery%20Downloads&color=%235C1F87)
 ![Version number](https://img.shields.io/github/v/release/chrisgrieser/alfred-reminders-today?label=Latest%20Release&style=plastic)
@@ -91,6 +91,7 @@ is why this workflow cannot support the following features:
 - The macOS Reminders widget shown at the notification center or desktop do not
   update when reminders are added or changed via this workflow.
 
+<!-- rumdl-disable-next-line MD063 -->
 ## iOS Shortcut for creating new task
 You can use this shortcut to create a new task for today due today. Use it in
 the Share Sheet or simply run it from the Lock Screen or Control Center.
