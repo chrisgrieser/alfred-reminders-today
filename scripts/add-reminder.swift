@@ -6,6 +6,10 @@ let eventStore = EKEventStore()
 let semaphore = DispatchSemaphore(value: 0)
 
 // Alfred environment variables
+guard CommandLine.arguments.count > 1 else {
+	fputs("No input argument provided.", stderr)
+	exit(0)
+}
 let input = CommandLine.arguments[1].trimmingCharacters(in: .whitespacesAndNewlines)
 let reminderList = ProcessInfo.processInfo.environment["reminder_list"]!
 let targetDay = ProcessInfo.processInfo.environment["target_day"]!
