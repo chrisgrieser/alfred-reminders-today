@@ -134,7 +134,7 @@ func requestRemindersAccess() async -> Bool {
 }
 
 func fail(_ msg: String) {
-	print("❌;" + msg)  // `;` used as separator in Alfred
+	print("❌\n" + msg)  // `\n` used as separator in Alfred, since input cannot contain newlines
 	semaphore.signal()
 }
 
@@ -263,7 +263,7 @@ Task {  // wrapping in `Task` because `await` is not allowed in `main`
 	notif.append("\"\(title)\"")
 	if msgIsUrl { notif.append("🔗") }
 	let alfredNotif = notif.joined(separator: "   ")
-	print("✅;" + alfredNotif)  // `;` used as separator in Alfred
+	print("✅\n" + alfredNotif)  // `\n` used as separator in Alfred
 
 	semaphore.signal()
 }

@@ -1166,7 +1166,8 @@
 			<key>config</key>
 			<dict>
 				<key>delimiter</key>
-				<string>;</string>
+				<string>
+</string>
 				<key>discardemptyarguments</key>
 				<false/>
 				<key>outputas</key>
