@@ -1098,7 +1098,7 @@ xcode-select --version &gt;&amp;2
 				<string>which -a "swift" &gt;&amp;2
 swift --version &gt;&amp;2
 xcode-select --version &gt;&amp;2
-./scripts/add-reminder.swift</string>
+./scripts/add-reminder.swift "$*"</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
 				<key>scriptfile</key>
