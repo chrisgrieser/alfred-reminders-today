@@ -561,8 +561,9 @@
 				<key>runningsubtext</key>
 				<string>loading…</string>
 				<key>script</key>
-				<string>which swift &gt;&amp;2
+				<string>which -a "swift" &gt;&amp;2
 swift --version &gt;&amp;2
+xcode-select --version &gt;&amp;2
 ./scripts/select-reminders.js</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
@@ -1094,8 +1095,9 @@ swift --version &gt;&amp;2
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>script</key>
-				<string>which swift &gt;&amp;2
+				<string>which -a "swift" &gt;&amp;2
 swift --version &gt;&amp;2
+xcode-select --version &gt;&amp;2
 ./scripts/add-reminder.swift</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
