@@ -3,7 +3,7 @@
 ![Alfred Gallery downloads](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2Fchrisgrieser%2F.config%2Frefs%2Fheads%2Fmain%2FAlfred.alfredpreferences%2Falfred-gallery-downloads.yaml&query=reminders-today&style=plastic&logo=alfred&label=Gallery%20Downloads&color=%235C1F87)
 ![Version number](https://img.shields.io/github/v/release/chrisgrieser/alfred-reminders-today?label=Latest%20Release&style=plastic)
 
-Display and add reminders due today.
+Display reminders due today, add new reminders, and show today's events.
 
 <img alt="Showcase" width=70% src="https://github.com/user-attachments/assets/627ef6de-8fe9-4710-8352-2c63e4be5e67">
 
@@ -21,7 +21,7 @@ Display and add reminders due today.
 <!-- tocstop -->
 
 ## Usage
-- Display reminders due today (or overdue) via the keyword `rem`. Configure the
+- Display reminders due (or overdue) today via the keyword `rem`. Configure the
   [hotkey](https://www.alfredapp.com/help/workflows/triggers/hotkey/) for faster
   triggering.
     - <kbd>⏎</kbd>: Complete the reminder.
@@ -39,7 +39,7 @@ Display and add reminders due today.
     - <kbd>⌘L</kbd>: Display the reminder details in Large Type.
     - <kbd>⌘Y</kbd>: Quick Look the URL, if there is one.
     - <kbd>⏎</kbd> *(on an event)*: If the location is a URL, open the URL.
-      Otherwise, open Google Maps with the location.
+      Otherwise, open the location on Google Maps or Apple Maps.
 - Quickly add a new reminder due today the keyword `qq`.
     - The command supports simple parsing of a due time with the format `hh:mm`
       or `hh.mm` at the start or end of the input.
